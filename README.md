@@ -173,3 +173,5 @@ Appium + WebdriverIO + TypeScript로 iOS·Android에서 공통 샘플 경기 흐
 CI/CD 설정 점검과 플랫폼별 배포 준비 작업은 [출시 작업 명세](docs/cicd-release-plan.md)를 참고하세요.
 
 [출시 준비 실행 순서](docs/execution-order.md) · [배포 자동화](docs/release-automation.md) · [서버 배포 검사](docs/server-deployment.md) · [모바일 API 연결](docs/mobile-api.md)
+
+[AWS 비용 비교와 호스팅 선택](docs/aws-cost-comparison.md)

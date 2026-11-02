@@ -57,3 +57,7 @@
 - 데이터 사용 범위 확인과 실제 경기 수집 검증.
 
 [플랫폼별 상세 체크리스트](cicd-release-plan.md) · [전체 준비 현황](release-readiness.md)
+
+## AWS 비용 검토 결과
+
+[AWS 비용 비교](aws-cost-comparison.md)를 추가했다. 기존 도서 서비스는 Lambda/DynamoDB 사용량 기반이므로 공유할 월정액 서버는 없다. 현재 MongoDB를 유지할지 DynamoDB로 저장 계층을 바꿀지에 따라 비용·개발 범위가 달라진다. 비용 확인 전 유료 리소스를 생성하지 않았으며 DB 선택은 아직 미확정이다.
