@@ -107,3 +107,7 @@ Bagel은 앱에 번들로 포함하고 OFL 라이선스 파일을 함께 보관�
 
 - [CREME 디자인 레퍼런스](https://mobbin.com/apps/creme-ios-2437b570-6f06-4b2a-a683-834d6a6ee2de): 시각적 방향 참고용이며 자산 복제 대상이 아니다.
 - [Bagel Fat One 소스와 OFL](https://github.com/google/fonts/tree/main/ofl/bagelfatone)
+
+## 앱 반영 현황 (2026-11-02)
+
+다크 배경, 아이보리 pill CTA, mint/orange 의미 색, 얇은 구분선, Bagel Fat One 제목·버튼·점수 폰트를 구현했다. 390×844 웹 렌더를 확인했고 iOS/Android/web 번들 생성에 성공했다. 새 네이티브 빌드에서의 최종 확인은 남아 있다. 구장 hero, 응원팀에 따른 1·3루 시점 및 팀 색 매핑은 아직 미구현이다. 전체 시안 적용 완료로 취급하지 않는다.

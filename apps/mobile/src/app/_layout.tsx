@@ -1,11 +1,14 @@
 import { Stack, router } from 'expo-router';
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
+import { useFonts } from 'expo-font';
+import { StatusBar } from 'expo-status-bar';
 import { colors } from '../ui';
 import { games } from '../domain/game';
 import type { NotificationResponse } from 'expo-notifications';
 
 export default function Layout() {
+  const [fontsLoaded, fontError] = useFonts({ BagelFatOne: require('../../assets/fonts/BagelFatOne-Regular.ttf') });
   useEffect(() => {
     if (Platform.OS === 'web') return;
     let cleanup: (() => void) | undefined;
@@ -26,9 +29,12 @@ export default function Layout() {
     }).catch(() => {});
     return () => { active = false; cleanup?.(); };
   }, []);
-  return <Stack screenOptions={{ headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink, contentStyle: { backgroundColor: colors.bg } }}>
+  if (!fontsLoaded && !fontError) return <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center' }}><StatusBar style="light" /><ActivityIndicator accessibilityLabel="화면 준비 중" color={colors.ink} /></View>;
+  return <><StatusBar style="light" /><Stack screenOptions={{ headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink, contentStyle: { backgroundColor: colors.bg } }}>
     <Stack.Screen name="index" options={{ title: '왜저럴까 · 기술 검증' }} />
     <Stack.Screen name="game/[id]" options={{ title: '오늘의 멘탈' }} />
+    <Stack.Screen name="records/index" options={{ title: '서버 경기 기록' }} />
+    <Stack.Screen name="records/[id]" options={{ title: '서버 경기 상세' }} />
     <Stack.Screen name="notifications" options={{ title: '알림 검증' }} />
-  </Stack>;
+  </Stack></>;
 }

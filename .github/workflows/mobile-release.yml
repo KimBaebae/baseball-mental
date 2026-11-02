@@ -1,0 +1,61 @@
+name: Build mobile release candidate
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Store build platform (does not submit or publish)
+        required: true
+        type: choice
+        options: [ios, android]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: mobile-release-${{ inputs.platform }}
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: mobile-release
+    env:
+      RELEASE_PLATFORM: ${{ inputs.platform }}
+      EAS_CLI_VERSION: '27.2.0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Require successful mobile and server CI for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release/require-ci.mjs
+      - name: Check release credentials
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo '::error::Configure EXPO_TOKEN in the mobile-release environment.'
+            exit 1
+          fi
+      - run: npm ci
+      - name: Build store binary and verify provenance
+        working-directory: apps/mobile
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          raw="$RUNNER_TEMP/eas-build.json"
+          trap 'rm -f "$raw"' EXIT
+          mkdir -p ../../artifacts/release
+          npx --yes "eas-cli@$EAS_CLI_VERSION" build --platform "$RELEASE_PLATFORM" --profile production --non-interactive --wait --json > "$raw"
+          node ../../scripts/release/build-metadata.mjs "$raw" ../../artifacts/release/build.json
+      - name: Upload sanitized build metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: store-build-${{ inputs.platform }}-${{ github.sha }}
+          path: artifacts/release/build.json
+          if-no-files-found: error
+          retention-days: 30

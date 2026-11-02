@@ -14,6 +14,7 @@ export default function Home() {
       <Text style={s.body}>{game.home} 응원 시점의 샘플 시나리오</Text>
       <Button title="멘탈 기록 열기 →" onPress={() => router.push({ pathname: '/game/[id]', params: { id: game.id } })} />
     </Card>)}
+    <Button title="서버 경기 기록 조회" onPress={() => router.push('/records')} />
     <Button title="알림·푸시 검증" onPress={() => router.push('/notifications')} />
     <Text style={s.body}>기술 검증용 · 기록은 앱을 종료하면 초기화됩니다.</Text>
   </ScrollView>;

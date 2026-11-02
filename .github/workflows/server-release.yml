@@ -1,0 +1,57 @@
+name: Publish server image
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: server-image-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Require successful validation of this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release/require-ci.mjs
+      - name: Build image
+        env:
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          image="ghcr.io/${REPOSITORY,,}-api"
+          echo "SERVER_IMAGE=$image" >> "$GITHUB_ENV"
+          docker build --label "org.opencontainers.image.source=https://github.com/$REPOSITORY" \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            -t "$image:$GITHUB_SHA" apps/server
+      - name: Publish and record immutable digest
+        env:
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_USER: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          trap 'docker logout ghcr.io >/dev/null 2>&1' EXIT
+          printf '%s' "$REGISTRY_TOKEN" | docker login ghcr.io -u "$REGISTRY_USER" --password-stdin
+          docker push "$SERVER_IMAGE:$GITHUB_SHA"
+          digest=$(docker inspect --format='{{index .RepoDigests 0}}' "$SERVER_IMAGE:$GITHUB_SHA")
+          test -n "$digest"
+          mkdir -p release
+          printf '%s\n' "$digest" > release/server-image.txt
+          printf 'Commit: `%s`\n\nImage: `%s`\n\nRegistry publication only; runtime deployment remains separate.\n' "$GITHUB_SHA" "$digest" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-image-${{ github.sha }}
+          path: release/server-image.txt
+          retention-days: 30

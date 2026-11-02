@@ -18,7 +18,7 @@ export default function Game() {
     <Text style={s.title}>{game.away} vs {game.home}</Text>
     <Card>
       <Text style={s.body}>내 멘탈 온도 · 의학적 지표가 아닌 재미용 점수</Text>
-      <Text style={{ fontSize: 68, fontWeight: '800', color: result.level >= 70 ? colors.orange : colors.green }}>{result.level}<Text style={{ fontSize: 20 }}> / 100</Text></Text>
+      <Text style={{ fontSize: 68, fontFamily: 'BagelFatOne', color: result.level >= 70 ? colors.orange : colors.green }}>{result.level}<Text style={{ fontSize: 20 }}> / 100</Text></Text>
       <View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: result.level }} accessibilityLabel="멘탈 온도" style={{ height: 16, backgroundColor: colors.line, borderRadius: 8, overflow: 'hidden' }}>
         <View style={{ height: 16, width: `${result.level}%`, backgroundColor: result.level >= 70 ? colors.orange : colors.green }} />
       </View>

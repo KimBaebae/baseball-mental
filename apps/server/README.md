@@ -62,3 +62,15 @@ uv export --no-dev --no-emit-project --no-header --format requirements-txt --out
 MongoDB가 없으면 통합 테스트는 건너뛴다. CI에서는 MongoDB 서비스를 실행하여 중복 저장·정정·늦은 응답·새 API 연결에서의 영속 조회를 검증한다. 통합 테스트는 `test_baseball_`로 시작하는 임시 DB를 만들고 종료 시 해당 DB만 삭제한다.
 
 OpenAPI는 [contracts/openapi.json](../../contracts/openapi.json)에 생성한다. CI는 스키마와 Docker 의존성 파일이 소스·잠금 파일과 일치하는지 검사한다. 앱과의 실제 데이터 연결 및 TypeScript 클라이언트 생성은 후속 작업이다.
+
+## 배포 사전 검사
+
+staging/production은 `APP_ENV`를 명시하고 인증·TLS MongoDB를 설정해야 한다. 과거 검증 수집기는 non-local에서 활성화할 수 없다.
+
+```sh
+uv run python -m app.deployment preflight
+uv run python -m app.deployment preflight --check-db
+uv run python -m app.deployment smoke https://SERVICE_HOST --game-date 2026-09-01
+```
+
+환경 변수, 접근 제한, 배포 후 검사와 복구 절차는 [서버 배포 문서](../../docs/server-deployment.md)를 따른다. 인프라 검사가 성공해도 운영 데이터·서비스 기능의 완료를 의미하지 않는다.
