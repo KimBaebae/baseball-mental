@@ -13,7 +13,7 @@
 | GitHub Actions | `.github/workflows/check.yml`, 모든 push/PR에서 실행 | 모바일·서버 변경과 무관하게 두 job 모두 실행 |
 | 모바일 CI | Node 22, npm ci, typecheck, lint, 도메인 테스트, Expo all-platform export | JS 번들 검증. 서명된 네이티브 빌드·실기기 테스트는 아님 |
 | 서버 CI | Ubuntu 22.04, uv lock, Ruff, pytest + MongoDB 8 통합 테스트, OpenAPI·requirements 동기화, Docker build | 이미지를 registry에 push하거나 서버에 배포하지 않음 |
-| 최근 CI | `79f864b`의 모바일·서버 job 성공 | [실행 결과](https://github.com/khyeji98/baseball-mental/actions/runs/41396861852) |
+| 최근 CI | `79f864b`의 모바일·서버 job 성공 | [실행 결과](https://github.com/KimBaebae/baseball-mental/actions/runs/41396861852) |
 | Appium | iOS 26.5·Android API 36 로컬 샘플 흐름 통과 | `ui:typecheck`와 `ui:test` 모두 현재 CI에 없음. [실행 명세](ui-testing.md) |
 | GitHub 배포 설정 | repository secrets 0개, environments 0개, rulesets 0개, main protected=false | EAS/클라우드 배포 인증·승인 환경·필수 체크 미설정. EAS 측 비밀값 유무와는 별개 |
 | EAS build | development / simulator / preview / desktop-preview | `production`, `submit` 설정 없음 |
