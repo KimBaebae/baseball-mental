@@ -169,3 +169,5 @@ npm run export
 ## UI 자동화 테스트
 
 Appium + WebdriverIO + TypeScript로 iOS·Android에서 공통 샘플 경기 흐름을 검증합니다. 설치, 실행 명령, 결과 확인은 [UI 테스트 가이드](docs/ui-testing.md)를 참고하세요.
+
+CI/CD 설정 점검과 플랫폼별 배포 준비 작업은 [출시 작업 명세](docs/cicd-release-plan.md)를 참고하세요.
