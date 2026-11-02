@@ -3,6 +3,7 @@
   "build": {
     "development": { "developmentClient": true, "distribution": "internal" },
     "simulator": { "developmentClient": true, "distribution": "internal", "ios": { "simulator": true } },
-    "preview": { "distribution": "internal", "android": { "buildType": "apk" } }
+    "preview": { "distribution": "internal", "android": { "buildType": "apk" } },
+    "desktop-preview": { "extends": "preview", "ios": { "simulator": true } }
   }
 }

@@ -56,3 +56,7 @@ __pycache__/
 .ruff_cache/
 *.egg-info/
 .coverage
+
+# Local UI automation drivers and reports
+.appium/
+artifacts/ui/

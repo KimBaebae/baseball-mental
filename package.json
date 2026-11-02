@@ -14,6 +14,17 @@
     "lint": "npm run lint --workspace @baseball-mental/mobile",
     "test": "npm run test --workspace @baseball-mental/mobile",
     "export": "npm run export --workspace @baseball-mental/mobile",
-    "push:test": "npm run push:test --workspace @baseball-mental/mobile"
+    "push:test": "npm run push:test --workspace @baseball-mental/mobile",
+    "ui:server": "mkdir -p artifacts/ui && APPIUM_HOME=\"$PWD/.appium\" appium --address 127.0.0.1 --log artifacts/ui/appium.log --log-no-colors",
+    "ui:test": "tsx --test tests/ui/smoke.test.ts",
+    "ui:typecheck": "tsc -p tests/ui/tsconfig.json",
+    "ui:setup": "APPIUM_HOME=\"$PWD/.appium\" appium driver install xcuitest@12.22.8 && APPIUM_HOME=\"$PWD/.appium\" appium driver install uiautomator2@8.7.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "appium": "3.9.0",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "webdriverio": "10.1.0"
   }
 }

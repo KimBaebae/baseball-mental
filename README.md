@@ -5,6 +5,8 @@
 
 현재는 **샘플 데이터 기반 프로토타입**입니다. 실제 KBO 경기 데이터는 연동하지 않았으며, 지수는 재미를 위한 지표입니다.
 
+**스토어 배포 준비는 아직 완료되지 않았습니다.** [배포 준비 현황](docs/release-readiness.md)과 [iOS·Android 시뮬레이터 테스트 안내](docs/simulator-testing.md)를 참고하세요.
+
 ## 구현 기능
 
 - 샘플 경기 목록과 경기 상세 화면
@@ -103,6 +105,7 @@ npx eas-cli@latest project:info
 | `development` | 개발 클라이언트, Metro 연결 |
 | `simulator` | iOS 시뮬레이터용 개발 클라이언트 |
 | `preview` | Metro 없이 실행하는 내부 배포 빌드; Android는 APK |
+| `desktop-preview` | Metro 없이 실행하는 iOS 시뮬레이터 앱과 Android APK |
 
 ```sh
 npx eas-cli@latest build --platform android --profile preview
@@ -162,3 +165,7 @@ npm run export
 
 - [Expo 푸시 알림 설정](https://docs.expo.dev/push-notifications/push-notifications-setup/)
 - [EAS 내부 배포](https://docs.expo.dev/build/internal-distribution/)
+
+## UI 자동화 테스트
+
+Appium + WebdriverIO + TypeScript로 iOS·Android에서 공통 샘플 경기 흐름을 검증합니다. 설치, 실행 명령, 결과 확인은 [UI 테스트 가이드](docs/ui-testing.md)를 참고하세요.
