@@ -143,6 +143,132 @@
           }
         }
       }
+    },
+    "/v1/seasons/{season}/games": {
+      "get": {
+        "tags": [
+          "mental"
+        ],
+        "summary": "Season Games",
+        "operationId": "season_games_v1_seasons__season__games_get",
+        "parameters": [
+          {
+            "name": "season",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Season"
+            }
+          },
+          {
+            "name": "team_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Team Id"
+            }
+          },
+          {
+            "name": "game_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Game Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/games/{game_id}/mental": {
+      "get": {
+        "tags": [
+          "mental"
+        ],
+        "summary": "Mental Report",
+        "operationId": "mental_report_v1_games__game_id__mental_get",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Game Id"
+            }
+          },
+          {
+            "name": "team_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Team Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MentalReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -236,6 +362,311 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "MentalEvent": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "inning": {
+            "type": "integer",
+            "title": "Inning"
+          },
+          "half": {
+            "type": "string",
+            "title": "Half"
+          },
+          "outcome": {
+            "type": "string",
+            "title": "Outcome"
+          },
+          "delta": {
+            "type": "integer",
+            "title": "Delta"
+          },
+          "score_after": {
+            "type": "integer",
+            "title": "Score After"
+          },
+          "batter_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batter Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "inning",
+          "half",
+          "outcome",
+          "delta",
+          "score_after"
+        ],
+        "title": "MentalEvent"
+      },
+      "MentalReport": {
+        "properties": {
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "team_id": {
+            "type": "string",
+            "title": "Team Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "incomplete",
+              "missing"
+            ],
+            "title": "Status"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "peak_score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peak Score"
+          },
+          "raw_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Total"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version",
+            "default": "kbo-mental-v1"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/MentalEvent"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "computed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Computed At"
+          },
+          "source_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Hash"
+          }
+        },
+        "type": "object",
+        "required": [
+          "game_id",
+          "team_id",
+          "status"
+        ],
+        "title": "MentalReport"
+      },
+      "SeasonCoverage": {
+        "properties": {
+          "completed": {
+            "type": "integer",
+            "title": "Completed"
+          },
+          "indexed": {
+            "type": "integer",
+            "title": "Indexed"
+          },
+          "incomplete": {
+            "type": "integer",
+            "title": "Incomplete"
+          },
+          "missing": {
+            "type": "integer",
+            "title": "Missing"
+          }
+        },
+        "type": "object",
+        "required": [
+          "completed",
+          "indexed",
+          "incomplete",
+          "missing"
+        ],
+        "title": "SeasonCoverage"
+      },
+      "SeasonGame": {
+        "properties": {
+          "game_id": {
+            "type": "string",
+            "pattern": "^\\d{8}[A-Z]{4}\\d$",
+            "title": "Game Id"
+          },
+          "game_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Game Date"
+          },
+          "season": {
+            "type": "integer",
+            "title": "Season",
+            "default": 2026
+          },
+          "series_id": {
+            "type": "string",
+            "title": "Series Id"
+          },
+          "away_team_id": {
+            "type": "string",
+            "title": "Away Team Id"
+          },
+          "home_team_id": {
+            "type": "string",
+            "title": "Home Team Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "scheduled",
+              "cancelled",
+              "unknown"
+            ],
+            "title": "Status"
+          },
+          "away_runs": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Away Runs"
+          },
+          "home_runs": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Home Runs"
+          },
+          "venue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue"
+          },
+          "index_status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "incomplete",
+              "missing"
+            ],
+            "title": "Index Status",
+            "default": "missing"
+          }
+        },
+        "type": "object",
+        "required": [
+          "game_id",
+          "game_date",
+          "series_id",
+          "away_team_id",
+          "home_team_id",
+          "status"
+        ],
+        "title": "SeasonGame"
+      },
+      "SeasonResponse": {
+        "properties": {
+          "season": {
+            "type": "integer",
+            "title": "Season"
+          },
+          "games": {
+            "items": {
+              "$ref": "#/components/schemas/SeasonGame"
+            },
+            "type": "array",
+            "title": "Games"
+          },
+          "coverage": {
+            "$ref": "#/components/schemas/SeasonCoverage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "season",
+          "games",
+          "coverage"
+        ],
+        "title": "SeasonResponse"
       },
       "ValidationError": {
         "properties": {

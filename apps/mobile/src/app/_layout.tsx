@@ -33,6 +33,8 @@ export default function Layout() {
   return <><StatusBar style="light" /><Stack screenOptions={{ headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink, contentStyle: { backgroundColor: colors.bg } }}>
     <Stack.Screen name="index" options={{ title: '왜저럴까 · 기술 검증' }} />
     <Stack.Screen name="game/[id]" options={{ title: '오늘의 멘탈' }} />
+    <Stack.Screen name="season/index" options={{ title: '2026 지난 경기' }} />
+    <Stack.Screen name="season/[id]" options={{ title: '경기 멘탈지수' }} />
     <Stack.Screen name="records/index" options={{ title: '서버 경기 기록' }} />
     <Stack.Screen name="records/[id]" options={{ title: '서버 경기 상세' }} />
     <Stack.Screen name="notifications" options={{ title: '알림 검증' }} />

@@ -1,6 +1,6 @@
 # 왜저럴까 서버
 
-Python 3.13 · FastAPI · Beanie · MongoDB 기반 API와 수집 작업이다. 현재는 서버 기반과 과거 경기 검증용 저장·조회 경로만 구현했다. 운영 배포, 실시간 이벤트 정규화, 인증, 개인 기록·시즌 집계·푸시는 아직 구현하지 않았다.
+Python 3.13 · FastAPI · Beanie · MongoDB 기반 API와 수집 작업이다. 서버 기반, 과거 경기 검증용 저장·조회와 2026 시즌 팀별 멘탈지수 계산·조회 경로를 구현했다. 운영 배포, 실시간 이벤트 정규화, 인증, 개인 기록·시즌 집계·푸시는 아직 구현하지 않았다.
 
 ## 실행
 
@@ -28,6 +28,8 @@ API 문서는 `http://127.0.0.1:8000/docs`에서 확인한다. Compose는 로컬
 | `GET /health/ready` | 실제 MongoDB 연결 확인, 미설정·장애 시 503 |
 | `GET /v1/games?game_date=2026-09-01` | DB에 저장된 날짜별 경기 스냅샷 조회 |
 | `GET /v1/games/{game_id}` | 저장 경기 조회, 없으면 404 |
+| `GET /v1/seasons/2026/games` | 팀·날짜 필터와 시즌 수집 범위 |
+| `GET /v1/games/{game_id}/mental?team_id=LG` | 관전 여부와 무관한 팀별 멘탈지수 |
 
 DB 미설정 상태에서는 조회 요청에 503을 반환한다. 샘플 데이터를 자동 삽입하지 않는다. 현재 API는 개인 정보 없는 검증용 읽기 API이며, 배포 전 데이터 이용 범위와 접근 정책을 확정해야 한다. 임의 쓰기·수집 요청을 외부 HTTP API로 노출하지 않는다.
 
@@ -61,7 +63,7 @@ uv export --no-dev --no-emit-project --no-header --format requirements-txt --out
 
 MongoDB가 없으면 통합 테스트는 건너뛴다. CI에서는 MongoDB 서비스를 실행하여 중복 저장·정정·늦은 응답·새 API 연결에서의 영속 조회를 검증한다. 통합 테스트는 `test_baseball_`로 시작하는 임시 DB를 만들고 종료 시 해당 DB만 삭제한다.
 
-OpenAPI는 [contracts/openapi.json](../../contracts/openapi.json)에 생성한다. CI는 스키마와 Docker 의존성 파일이 소스·잠금 파일과 일치하는지 검사한다. 앱과의 실제 데이터 연결 및 TypeScript 클라이언트 생성은 후속 작업이다.
+OpenAPI는 [contracts/openapi.json](../../contracts/openapi.json)에 생성한다. CI는 스키마와 Docker 의존성 파일이 소스·잠금 파일과 일치하는지 검사한다. 앱은 실행 시 응답을 검증하는 TypeScript 클라이언트로 연결한다. 자동 클라이언트 생성은 적용하지 않았다.
 
 ## 배포 사전 검사
 
@@ -74,3 +76,5 @@ uv run python -m app.deployment smoke https://SERVICE_HOST --game-date 2026-09-0
 ```
 
 환경 변수, 접근 제한, 배포 후 검사와 복구 절차는 [서버 배포 문서](../../docs/server-deployment.md)를 따른다. 인프라 검사가 성공해도 운영 데이터·서비스 기능의 완료를 의미하지 않는다.
+
+2026 시즌 수집·재개 방법과 계산 기준은 [지난 경기 멘탈지수](../../docs/season-mental.md)를 따른다.

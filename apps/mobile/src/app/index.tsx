@@ -7,6 +7,8 @@ export default function Home() {
   return <ScrollView style={s.page} contentContainerStyle={s.content}>
     <Text style={s.eyebrow}>BASEBALL, WITH FEELINGS</Text>
     <Text style={s.title}>{'오늘도 야구,\n내 멘탈은 안녕?'}</Text>
+    <Button title="2026 지난 경기 멘탈지수" onPress={() => router.push('/season')} />
+    <Text style={s.body}>지난 경기를 팀 관점으로 살펴보세요. 아래는 가상 경기 체험이에요.</Text>
     <Text style={s.body}>가상 경기로 화면 이동과 멘탈 변화를 체험해보세요. 실제 일정·중계·선수 기록이 아닙니다.</Text>
     {games.map(game => <Card key={game.id}>
       <View style={s.row}><Text style={s.eyebrow}>DEMO · {game.inning}</Text><Text style={s.body}>{game.note}</Text></View>

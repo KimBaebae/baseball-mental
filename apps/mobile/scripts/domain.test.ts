@@ -65,3 +65,72 @@ test('API reports timeout and propagates cancellation', async () => {
   const controller = new AbortController(); controller.abort();
   await assert.rejects(createGamesApi('https://api.example.test', pending).list('2026-09-01', controller.signal), /aborted/);
 });
+
+
+const seasonGame = {
+  game_id: '20260901LGOB0', game_date: '2026-09-01', season: 2026, series_id: '0',
+  away_team_id: 'LG', home_team_id: 'OB', status: 'completed', away_runs: 3, home_runs: 1,
+  venue: '잠실', index_status: 'ready',
+};
+const seasonResponse = { season: 2026, games: [seasonGame], coverage: { completed: 1, indexed: 1, incomplete: 0, missing: 0 } };
+const mentalResponse = {
+  game_id: seasonGame.game_id, team_id: 'LG', status: 'ready', reason: null,
+  score: 42, peak_score: 56, raw_total: 12, model_version: 'kbo-mental-v1',
+  events: [{ event_id: 'e1', inning: 1, half: 'top', outcome: 'out', delta: 12, score_after: 42, batter_name: '샘플 선수' }],
+  computed_at: '2026-11-03T01:00:00Z', source_hash: 'a'.repeat(64),
+};
+
+test('season API filters by team and date without login or attendance inputs', async () => {
+  let requested = '';
+  const api = createGamesApi('https://api.example.test', async input => {
+    requested = String(input); return new Response(JSON.stringify(seasonResponse));
+  });
+  assert.deepEqual(await api.season(2026, { team: 'LG', date: '2026-09-01' }), seasonResponse);
+  assert.equal(requested, 'https://api.example.test/v1/seasons/2026/games?team_id=LG&game_date=2026-09-01');
+  await assert.rejects(api.season(2026, { date: '2025-09-01' }), /시즌/);
+  await assert.rejects(api.season(2026, { team: 'HH' }), /일치/);
+});
+
+test('mental API preserves ready scores and rejects wrong team perspective', async () => {
+  const api = createGamesApi('https://api.example.test', respond(mentalResponse));
+  assert.deepEqual(await api.mental(seasonGame.game_id, 'LG'), mentalResponse);
+  await assert.rejects(api.mental(seasonGame.game_id, 'OB'), /형식/);
+  await assert.rejects(createGamesApi('https://api.example.test', respond({ ...mentalResponse, score: 101 })).mental(seasonGame.game_id, 'LG'), /형식/);
+});
+
+test('missing and incomplete mental indices remain null, never a fabricated zero', async () => {
+  for (const status of ['missing', 'incomplete']) {
+    const payload = { ...mentalResponse, status, reason: '자료 확인 중', score: null, peak_score: null, raw_total: null, events: [], computed_at: null, source_hash: null };
+    const result = await createGamesApi('https://api.example.test', respond(payload)).mental(seasonGame.game_id, 'LG');
+    assert.equal(result.score, null);
+    assert.equal(result.status, status);
+    await assert.rejects(createGamesApi('https://api.example.test', respond({ ...payload, score: 0 })).mental(seasonGame.game_id, 'LG'), /형식/);
+  }
+});
+
+
+test('mental timeline accepts documented non-batting events and rejects unknown outcomes', async () => {
+  for (const outcome of ['wild_pitch', 'passed_ball', 'balk', 'stolen_base', 'caught_stealing', 'fielders_choice', 'hit_by_pitch', 'sacrifice']) {
+    const payload = { ...mentalResponse, events: [{ ...mentalResponse.events[0], outcome }] };
+    assert.equal((await createGamesApi('https://api.example.test', respond(payload)).mental(seasonGame.game_id, 'LG')).events[0].outcome, outcome);
+  }
+  const payload = { ...mentalResponse, events: [{ ...mentalResponse.events[0], outcome: 'unknown-event' }] };
+  await assert.rejects(createGamesApi('https://api.example.test', respond(payload)).mental(seasonGame.game_id, 'LG'), /형식/);
+});
+
+
+import { mentalReason } from '../src/domain/teams.ts';
+test('parser diagnostic codes do not leak into user-facing missing-index copy', () => {
+  assert.equal(mentalReason('runner_origin_mismatch', 'incomplete').includes('runner_origin'), false);
+  assert.match(mentalReason(null, 'missing'), /준비되지/);
+  assert.equal(mentalReason('아직 자료를 확인 중이에요.', 'incomplete'), '아직 자료를 확인 중이에요.');
+});
+
+
+import { gameIdentity } from '../src/domain/teams.ts';
+test('game header derives only valid dates and registered matchups from game IDs', () => {
+  assert.deepEqual(gameIdentity('20260328KTLG0'), { date: '2026-03-28', away: 'KT', home: 'LG' });
+  for (const id of ['20260230KTLG0', '20260328ZZLG0', '20260328LGLG0', 'bad', undefined, ['20260328KTLG0']]) {
+    assert.equal(gameIdentity(id), null);
+  }
+});
