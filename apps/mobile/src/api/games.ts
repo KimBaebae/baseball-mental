@@ -123,7 +123,7 @@ const nonnegativeInteger = (value: unknown) => Number.isInteger(value) && Number
 const nullableText = (value: unknown) => value === null || typeof value === 'string';
 const score = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 100;
 const validTeam = (value: unknown) => typeof value === 'string' && /^[A-Z]{2}$/.test(value);
-const mentalOutcomes = new Set(['out', 'strikeout', 'double_play', 'hit', 'walk', 'home_run', 'error', 'wild_pitch', 'passed_ball', 'balk', 'stolen_base', 'caught_stealing', 'fielders_choice', 'hit_by_pitch', 'sacrifice']);
+const mentalOutcomes = new Set(['out', 'strikeout', 'double_play', 'triple_play', 'strikeout_reached', 'runner_advance', 'hit', 'walk', 'home_run', 'error', 'wild_pitch', 'passed_ball', 'balk', 'stolen_base', 'caught_stealing', 'fielders_choice', 'hit_by_pitch', 'sacrifice']);
 const indexStatus = (value: unknown) => ['ready', 'incomplete', 'missing'].includes(String(value));
 
 export function parseSeasonGames(value: unknown, season: number): SeasonGames {

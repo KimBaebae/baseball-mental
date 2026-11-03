@@ -1,0 +1,130 @@
+{
+  "coverage": {
+    "completed": 729,
+    "indexed": 703,
+    "incomplete": 26,
+    "missing": 0
+  },
+  "normalized_events_ready": 57529,
+  "pending": [
+    {
+      "game_id": "20260401HTLG0",
+      "reason": "runner_destination_collision"
+    },
+    {
+      "game_id": "20260410NCSS0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260412NCSS0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260415SSHH0",
+      "reason": "runner_destination_collision"
+    },
+    {
+      "game_id": "20260421HTKT0",
+      "reason": "runner_action_after_three_outs"
+    },
+    {
+      "game_id": "20260422OBLT0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260425LGOB0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260517LTOB0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260522WOLG0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260524NCKT0",
+      "reason": "runner_action_after_three_outs"
+    },
+    {
+      "game_id": "20260612NCKT0",
+      "reason": "unsupported_runner_movement"
+    },
+    {
+      "game_id": "20260614LTLG0",
+      "reason": "double_play_out_count_mismatch"
+    },
+    {
+      "game_id": "20260719WOHH0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260730LTHH0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260814WOKT0",
+      "reason": "unattributed_between_pitch_event"
+    },
+    {
+      "game_id": "20260820OBNC0",
+      "reason": "runner_action_after_three_outs"
+    },
+    {
+      "game_id": "20260825HHSK0",
+      "reason": "unknown_impactful_line"
+    },
+    {
+      "game_id": "20260825SSWO0",
+      "reason": "review_changed_or_unknown"
+    },
+    {
+      "game_id": "20260829LGLT0",
+      "reason": "unclosed_half"
+    },
+    {
+      "game_id": "20260904HHLT0",
+      "reason": "unknown_impactful_line"
+    },
+    {
+      "game_id": "20260905SSLG0",
+      "reason": "unknown_impactful_line"
+    },
+    {
+      "game_id": "20260906HHLT0",
+      "reason": "unsupported_runner_movement"
+    },
+    {
+      "game_id": "20260909LGHH0",
+      "reason": "unknown_impactful_line"
+    },
+    {
+      "game_id": "20260910WOOB0",
+      "reason": "unattributed_between_pitch_event"
+    },
+    {
+      "game_id": "20261005WOHH0",
+      "reason": "unknown_impactful_line"
+    },
+    {
+      "game_id": "20261007HTLT0",
+      "reason": "unknown_impactful_line"
+    }
+  ],
+  "reasons": {
+    "runner_destination_collision": 2,
+    "review_changed_or_unknown": 9,
+    "runner_action_after_three_outs": 3,
+    "unsupported_runner_movement": 2,
+    "double_play_out_count_mismatch": 1,
+    "unattributed_between_pitch_event": 2,
+    "unknown_impactful_line": 6,
+    "unclosed_half": 1
+  },
+  "preseason": 0,
+  "imports": 22,
+  "as_of": "2026-11-03",
+  "storage": "local-verification-only",
+  "model_version": "kbo-mental-v1"
+}

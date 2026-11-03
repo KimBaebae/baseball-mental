@@ -8,7 +8,7 @@ import { Button, Card, colors, s } from '../../ui';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
 const outcomes: Record<string, string> = {
-  strikeout: '삼진', groundout: '땅볼 아웃', flyout: '뜬공 아웃', double_play: '병살타', error: '실책',
+  strikeout: '삼진', groundout: '땅볼 아웃', flyout: '뜬공 아웃', double_play: '병살타', triple_play: '삼중살', strikeout_reached: '낫아웃 출루', runner_advance: '주자 진루', error: '실책',
   single: '안타', double: '2루타', triple: '3루타', home_run: '홈런', walk: '볼넷', hit_by_pitch: '몸에 맞는 공',
   out: '아웃', hit: '안타', sacrifice: '희생타', score: '득점',
   wild_pitch: '폭투', passed_ball: '포일', balk: '보크', stolen_base: '도루',

@@ -8,6 +8,26 @@ from pydantic import AwareDatetime, BaseModel, Field
 MODEL_VERSION = "kbo-mental-v1"
 TEAMS = {"LG", "OB", "KT", "SS", "NC", "HH", "LT", "HT", "SK", "WO"}
 IndexStatus = Literal["ready", "incomplete", "missing"]
+Outcome = Literal[
+    "out",
+    "strikeout",
+    "double_play",
+    "triple_play",
+    "strikeout_reached",
+    "runner_advance",
+    "hit",
+    "walk",
+    "home_run",
+    "error",
+    "wild_pitch",
+    "passed_ball",
+    "balk",
+    "stolen_base",
+    "caught_stealing",
+    "fielders_choice",
+    "hit_by_pitch",
+    "sacrifice",
+]
 
 
 class SeasonGame(BaseModel):
@@ -33,31 +53,15 @@ class NormalizedEvent(BaseModel):
     margin_before: int
     offense_team_id: str
     defense_team_id: str
-    outcome: Literal[
-        "out",
-        "strikeout",
-        "double_play",
-        "hit",
-        "walk",
-        "home_run",
-        "error",
-        "wild_pitch",
-        "passed_ball",
-        "balk",
-        "stolen_base",
-        "caught_stealing",
-        "fielders_choice",
-        "hit_by_pitch",
-        "sacrifice",
-    ]
+    outcome: Outcome
     batter_name: str | None = None
 
 
 class MentalEvent(BaseModel):
     event_id: str
     inning: int
-    half: str
-    outcome: str
+    half: Literal["top", "bottom"]
+    outcome: Outcome
     delta: int
     score_after: int
     batter_name: str | None = None
@@ -119,6 +123,9 @@ def score_game(
         "out": 6,
         "strikeout": 8,
         "double_play": 18,
+        "triple_play": 26,
+        "strikeout_reached": -4,
+        "runner_advance": 0,
         "hit": -10,
         "walk": -4,
         "home_run": -20,

@@ -118,6 +118,19 @@ test('mental timeline accepts documented non-batting events and rejects unknown 
   await assert.rejects(createGamesApi('https://api.example.test', respond(payload)).mental(seasonGame.game_id, 'LG'), /형식/);
 });
 
+test('ready mental timeline preserves strikeout reach, triple play and neutral runner advances', async () => {
+  const events = [
+    { ...mentalResponse.events[0], event_id: 'reach', outcome: 'strikeout_reached', delta: -4, score_after: 26 },
+    { ...mentalResponse.events[0], event_id: 'triple', outcome: 'triple_play', delta: 26, score_after: 52 },
+    { ...mentalResponse.events[0], event_id: 'advance', outcome: 'runner_advance', delta: 0, score_after: 52 },
+  ];
+  const payload = { ...mentalResponse, score: 52, peak_score: 52, raw_total: 22, events };
+  const result = await createGamesApi('https://api.example.test', respond(payload)).mental(seasonGame.game_id, 'LG');
+  assert.equal(result.status, 'ready');
+  assert.deepEqual(result.events, events);
+  assert.equal(result.score, 52);
+});
+
 
 import { mentalReason } from '../src/domain/teams.ts';
 test('parser diagnostic codes do not leak into user-facing missing-index copy', () => {

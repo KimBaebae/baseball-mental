@@ -375,10 +375,34 @@
           },
           "half": {
             "type": "string",
+            "enum": [
+              "top",
+              "bottom"
+            ],
             "title": "Half"
           },
           "outcome": {
             "type": "string",
+            "enum": [
+              "out",
+              "strikeout",
+              "double_play",
+              "triple_play",
+              "strikeout_reached",
+              "runner_advance",
+              "hit",
+              "walk",
+              "home_run",
+              "error",
+              "wild_pitch",
+              "passed_ball",
+              "balk",
+              "stolen_base",
+              "caught_stealing",
+              "fielders_choice",
+              "hit_by_pitch",
+              "sacrifice"
+            ],
             "title": "Outcome"
           },
           "delta": {

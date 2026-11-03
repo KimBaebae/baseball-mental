@@ -99,3 +99,22 @@ def test_public_mental_api_no_attendance_gate_and_missing_state():
         assert client.get("/v1/seasons/2026/games").json()["coverage"]["missing"] == 1
         assert client.get("/v1/seasons/2025/games").status_code == 422
         assert client.get("/v1/seasons/2026/games?game_date=2025-01-01").status_code == 422
+
+
+def test_triple_play_and_strikeout_reached_have_distinct_effects():
+    triple = score_game(
+        game(), [event(outcome="triple_play")], complete=True, reason=None, source_hash="a"
+    )
+    reached = score_game(
+        game(), [event(outcome="strikeout_reached")], complete=True, reason=None, source_hash="a"
+    )
+    assert triple[0].raw_total == 26
+    assert reached[0].raw_total == -4
+    assert reached[0].events[0].outcome == "strikeout_reached"
+
+
+def test_explicit_neutral_runner_advance_does_not_invent_stress_change():
+    reports = score_game(
+        game(), [event(outcome="runner_advance")], complete=True, reason=None, source_hash="a"
+    )
+    assert all(report.score == 30 and report.raw_total == 0 for report in reports)
