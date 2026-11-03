@@ -57,11 +57,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/v1/games", response_model=list[GameSnapshot], tags=["games"])
     async def list_games(
-        game_date: Annotated[date, Query()],
         repo: Annotated[GameRepository, Depends(repository)],
+        game_date: Annotated[date | None, Query()] = None,
+        year: Annotated[int | None, Query(ge=1, le=9998)] = None,
+        month: Annotated[int | None, Query(ge=1, le=12)] = None,
     ):
+        if game_date is not None:
+            if year is not None or month is not None:
+                raise HTTPException(422, "Use game_date or year and month")
+        elif year is None or month is None:
+            raise HTTPException(422, "Provide game_date or both year and month")
         try:
-            return await repo.list_games(game_date)
+            if game_date is not None:
+                return await repo.list_games(game_date)
+            return await repo.list_games(year=year, month=month)
         except PyMongoError:
             raise HTTPException(503, "Game storage is unavailable") from None
 
@@ -81,7 +90,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         repo: Annotated[SeasonRepository, Depends(season_repository)],
         team_id: str | None = None,
         game_date: date | None = None,
+        month: Annotated[int | None, Query(ge=1, le=12)] = None,
     ):
+        if game_date is not None and month is not None:
+            raise HTTPException(422, "Use game_date or month")
         if season != 2026:
             raise HTTPException(422, "Only the 2026 season is supported")
         if team_id is not None and team_id not in TEAMS:
@@ -89,6 +101,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if game_date and game_date.year != season:
             raise HTTPException(422, "Date must belong to requested season")
         try:
+            if month is not None:
+                return await repo.season(season, team_id, None, month)
             return await repo.season(season, team_id, game_date.isoformat() if game_date else None)
         except PyMongoError:
             raise HTTPException(503, "Game storage is unavailable") from None

@@ -4,6 +4,7 @@ import re
 
 from pydantic import ValidationError
 
+from app.date_ranges import month_date_range
 from app.mental import (
     MODEL_VERSION,
     TEAMS,
@@ -235,12 +236,18 @@ class SeasonRepository:
         if not result.matched_count:
             raise ValueError("Schedule changed, is missing, or a newer report is already stored")
 
-    async def season(self, season: int, team_id: str | None, game_date: str | None):
+    async def season(
+        self, season: int, team_id: str | None, game_date: str | None, month: int | None = None
+    ):
+        if game_date is not None and month is not None:
+            raise ValueError("Use game_date or month")
         query = {"game.season": season, "game.series_id": {"$ne": "1"}}
         if team_id:
             query["$or"] = [{"game.away_team_id": team_id}, {"game.home_team_id": team_id}]
         if game_date:
             query["game.game_date"] = game_date
+        elif month is not None:
+            query["game.game_date"] = month_date_range(season, month)
         items = await self.games.find(query).sort("_id", 1).to_list(length=2000)
         games = []
         for item in items:

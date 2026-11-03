@@ -80,15 +80,16 @@ const mentalResponse = {
   computed_at: '2026-11-03T01:00:00Z', source_hash: 'a'.repeat(64),
 };
 
-test('season API filters by team and date without login or attendance inputs', async () => {
+test('season API filters by team and month without login or attendance inputs', async () => {
   let requested = '';
   const api = createGamesApi('https://api.example.test', async input => {
     requested = String(input); return new Response(JSON.stringify(seasonResponse));
   });
-  assert.deepEqual(await api.season(2026, { team: 'LG', date: '2026-09-01' }), seasonResponse);
-  assert.equal(requested, 'https://api.example.test/v1/seasons/2026/games?team_id=LG&game_date=2026-09-01');
-  await assert.rejects(api.season(2026, { date: '2025-09-01' }), /시즌/);
+  assert.deepEqual(await api.season(2026, { team: 'LG', month: 9 }), seasonResponse);
+  assert.equal(requested, 'https://api.example.test/v1/seasons/2026/games?team_id=LG&month=9');
+  await assert.rejects(api.season(2026, { month: 13 }), /월/);
   await assert.rejects(api.season(2026, { team: 'HH' }), /일치/);
+  await assert.rejects(api.season(2026, { month: 8 }), /일치/);
 });
 
 test('mental API preserves ready scores and rejects wrong team perspective', async () => {
@@ -146,4 +147,17 @@ test('game header derives only valid dates and registered matchups from game IDs
   for (const id of ['20260230KTLG0', '20260328ZZLG0', '20260328LGLG0', 'bad', undefined, ['20260328KTLG0']]) {
     assert.equal(gameIdentity(id), null);
   }
+});
+
+
+test('snapshot month query rejects invalid months and out-of-month data', async () => {
+  let requested = '';
+  const api = createGamesApi('https://api.example.test', async input => {
+    requested = String(input); return new Response(JSON.stringify([snapshot]));
+  });
+  assert.equal((await api.listMonth(2026, 9)).length, 1);
+  assert.equal(requested, 'https://api.example.test/v1/games?year=2026&month=9');
+  await assert.rejects(api.listMonth(2026, 0), /연도와 월/);
+  await assert.rejects(api.listMonth(2026, 9.5), /연도와 월/);
+  await assert.rejects(api.listMonth(2026, 8), /일치/);
 });

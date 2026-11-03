@@ -2,15 +2,26 @@ from datetime import date
 
 from pymongo.errors import DuplicateKeyError
 
+from app.date_ranges import month_date_range
 from app.models import GameRecord, GameSnapshot, SourceSnapshot
 
 
 class GameRepository:
-    async def list_games(self, game_date: date) -> list[GameSnapshot]:
+    async def list_games(
+        self, game_date: date | None = None, *, year: int | None = None, month: int | None = None
+    ) -> list[GameSnapshot]:
+        if game_date is not None:
+            if year is not None or month is not None:
+                raise ValueError("Use game_date or year and month")
+            query = {"snapshot.game_date": game_date.isoformat()}
+        elif year is not None and month is not None:
+            query = {"snapshot.game_date": month_date_range(year, month)}
+        else:
+            raise ValueError("Provide game_date or both year and month")
         records = (
-            await GameRecord.find({"snapshot.game_date": game_date.isoformat()})
+            await GameRecord.find(query)
             .sort("snapshot.game_id")
-            .limit(100)
+            .limit(2000)
             .to_list()
         )
         return [item.snapshot for item in records]

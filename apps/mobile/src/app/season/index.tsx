@@ -1,29 +1,28 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { createGamesApi, validGameDate, type SeasonGame } from '../../api/games';
+import { createGamesApi, type SeasonGame } from '../../api/games';
+import { YearMonthPicker } from '../../YearMonthPicker';
 import { teams, teamName, indexLabel } from '../../domain/teams';
 import { useRemote } from '../../hooks/useRemote';
 import { Button, Card, colors, s } from '../../ui';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
-const season = 2026;
 const statusLabel = { completed: '경기 종료', scheduled: '예정', cancelled: '취소', unknown: '상태 확인 중' } as const;
 
 export default function Season() {
   const [team, setTeam] = useState('');
-  const [dateInput, setDateInput] = useState('');
-  const [date, setDate] = useState('');
-  const [inputError, setInputError] = useState('');
+  const [season, setSeason] = useState(2026);
+  const [month, setMonth] = useState<number | null>(null);
   const [attempt, setAttempt] = useState(0);
-  const key = `${team}:${date}:${attempt}`;
-  const load = useCallback((signal: AbortSignal) => api.season(season, { team, date }, signal), [team, date]);
+  const key = `${season}:${team}:${month}:${attempt}`;
+  const load = useCallback((signal: AbortSignal) => api.season(season, { team, month: month ?? undefined }, signal), [season, team, month]);
   const { loading, data, error } = useRemote(key, load);
   const openGame = (game: SeasonGame, perspective: string) => router.push({ pathname: '/season/[id]', params: { id: game.game_id, team: perspective } });
   return <FlatList style={s.page} contentContainerStyle={s.content} data={data?.games ?? []} keyExtractor={game => game.game_id} initialNumToRender={12}
     ListHeaderComponent={<View style={{ gap: 18 }}>
       <Text style={s.eyebrow}>지난 경기, 다시 보는 마음</Text>
-      <Text style={s.title}>2026 시즌 멘탈지수</Text>
+      <Text style={s.title}>{season} 시즌 멘탈지수</Text>
       <Text style={s.body}>정규시즌·포스트시즌 · 시범경기 제외</Text>
       <Text style={s.body}>경기 기록을 바탕으로 계산한 재미용 지수예요. 직접 관람하지 않은 경기도 팀 관점으로 볼 수 있어요. 내 감정이나 관람 기록을 측정한 값은 아니에요.</Text>
       <Text style={s.heading}>응원팀으로 찾기</Text>
@@ -33,14 +32,8 @@ export default function Season() {
           <Text style={{ color: team === item.id ? colors.onPrimary : colors.ink, fontWeight: '700' }}>{team === item.id ? '✓ ' : ''}{item.name}</Text>
         </Pressable>)}
       </ScrollView>
-      <TextInput accessibilityLabel="시즌 경기 날짜" value={dateInput} onChangeText={setDateInput} placeholder="날짜 선택 없이 전체 · YYYY-MM-DD" placeholderTextColor={colors.muted} autoCapitalize="none" maxLength={10}
-        style={{ borderWidth: 1, borderColor: colors.line, padding: 14, color: colors.ink, borderRadius: 12 }} />
-      <Button title="조회하기" onPress={() => {
-        if (dateInput && (!validGameDate(dateInput) || !dateInput.startsWith('2026-'))) { setInputError('2026년 날짜를 YYYY-MM-DD 형식으로 입력해주세요.'); return; }
-        setInputError(''); setDate(dateInput); setAttempt(value => value + 1);
-      }} />
-      {inputError ? <Text accessibilityRole="alert" style={s.body}>{inputError}</Text> : null}
-      <Text style={s.body}>{team ? teamName(team) : '전체 팀'} · {date || '시즌 전체'}</Text>
+      <YearMonthPicker year={season} month={month} allowAll onChange={(year, value) => { setSeason(year); setMonth(value); }} />
+      <Text style={s.body}>{team ? teamName(team) : '전체 팀'} · {season}년 {month === null ? '전체 월' : `${month}월`}</Text>
       {data ? <Card>
         <Text style={s.heading}>조회된 종료 경기 {data.coverage.completed}경기</Text>
         <Text style={s.body}>지수 확인 가능 {data.coverage.indexed} · 자료 확인 중 {data.coverage.incomplete} · 준비 전 {data.coverage.missing}</Text>

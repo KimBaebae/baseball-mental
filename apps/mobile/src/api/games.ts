@@ -67,20 +67,28 @@ export function createGamesApi(baseUrl: string | undefined, request: typeof fetc
     }
   }
   return {
-    async season(season: number, filters: { team?: string; date?: string } = {}, signal?: AbortSignal): Promise<SeasonGames> {
+    async season(season: number, filters: { team?: string; month?: number } = {}, signal?: AbortSignal): Promise<SeasonGames> {
       if (!Number.isInteger(season) || season < 1982 || season > 2100) throw new Error('시즌을 확인해주세요.');
       if (filters.team && !validTeam(filters.team)) throw new Error('응원팀을 확인해주세요.');
-      if (filters.date && (!validGameDate(filters.date) || !filters.date.startsWith(`${season}-`))) throw new Error('해당 시즌의 날짜를 YYYY-MM-DD 형식으로 입력해주세요.');
+      if (filters.month !== undefined && (!Number.isInteger(filters.month) || filters.month < 1 || filters.month > 12)) throw new Error('월을 1~12월 중 선택해주세요.');
       const params = new URLSearchParams();
       if (filters.team) params.set('team_id', filters.team);
-      if (filters.date) params.set('game_date', filters.date);
+      if (filters.month !== undefined) params.set('month', String(filters.month));
       const data = parseSeasonGames(await get(`/v1/seasons/${season}/games${params.size ? `?${params}` : ''}`, signal), season);
-      if (data.games.some(game => (filters.date && game.game_date !== filters.date) || (filters.team && game.away_team_id !== filters.team && game.home_team_id !== filters.team))) throw new Error('조회 조건과 경기 기록이 일치하지 않아요.');
+      if (data.games.some(game => (filters.month !== undefined && !game.game_date.startsWith(`${season}-${String(filters.month).padStart(2, '0')}-`)) || (filters.team && game.away_team_id !== filters.team && game.home_team_id !== filters.team))) throw new Error('조회 조건과 경기 기록이 일치하지 않아요.');
       return data;
     },
     async mental(id: string, team: string, signal?: AbortSignal): Promise<MentalIndex> {
       if (!/^\d{8}[A-Z]{4}\d$/.test(id) || !validTeam(team)) throw new Error('경기와 응원팀을 확인해주세요.');
       return parseMentalIndex(await get(`/v1/games/${encodeURIComponent(id)}/mental?team_id=${encodeURIComponent(team)}`, signal), id, team);
+    },
+    async listMonth(year: number, month: number, signal?: AbortSignal): Promise<GameSnapshot[]> {
+      if (!Number.isInteger(year) || year < 1982 || year > 2100 || !Number.isInteger(month) || month < 1 || month > 12) throw new Error('연도와 월을 확인해주세요.');
+      const data = await get(`/v1/games?year=${year}&month=${month}`, signal);
+      if (!Array.isArray(data)) throw new Error('경기 목록 응답 형식이 올바르지 않아요.');
+      const games = data.map(parseSnapshot);
+      if (games.some(game => !game.game_date.startsWith(`${year}-${String(month).padStart(2, '0')}-`))) throw new Error('요청한 월과 경기 기록이 일치하지 않아요.');
+      return games;
     },
     async list(gameDate: string, signal?: AbortSignal): Promise<GameSnapshot[]> {
       if (!validGameDate(gameDate)) throw new Error('날짜를 YYYY-MM-DD 형식으로 입력해주세요.');

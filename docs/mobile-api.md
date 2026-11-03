@@ -21,7 +21,7 @@ EXPO_PUBLIC_API_URL=https://api.example.com npm start
 
 | 화면 | 요청 | 처리 |
 |---|---|---|
-| `/records` | `GET /v1/games?game_date=YYYY-MM-DD` | 한국 날짜 기본값, 날짜 입력/조회, 로딩·오류·재시도·빈 목록 |
+| `/records` | `GET /v1/games?year=2026&month=9` | 한국 날짜 기본값, 연도·월 선택/조회, 로딩·오류·재시도·빈 목록 |
 | `/records/[id]` | `GET /v1/games/{id}` | 점수·경기 날짜·서버 수집 시각·출처, 새로고침·오류·재시도 |
 
 현재 계약은 `source=kbo-public-probe`, `verification=historical-response-only`다. 앱은 응답을 실행 시 검증하고 다른 출처/검증 상태, 잘못된 날짜/점수/타임스탬프, 요청과 불일치하는 ID/날짜를 오류로 처리한다. 계약을 확장하면 서버와 앱을 함께 변경해야 한다.
@@ -44,13 +44,13 @@ EXPO_PUBLIC_API_URL=https://api.example.com npm start
 
 ## 2026 시즌 공통 멘탈지수
 
-`/season`에서 전체 시즌 목록과 팀·날짜 필터, 수집 범위를 조회한다. `/season/[id]`에서 참가팀 관점을 바꾸며 최종·최고 지수와 사건별 변화를 확인한다. 관전 여부나 로그인 조건은 없다. `incomplete`/`missing`은 점수 대신 사유를 보여주며 다른 팀의 결과나 샘플 점수로 대체하지 않는다. 팀명은 KBO 팀 코드에서 표시명으로 변환한다. [계산·수집 명세](season-mental.md)를 참고한다.
+`/season`에서 전체 시즌 목록과 팀·연도·월 필터, 수집 범위를 조회한다. `/season/[id]`에서 참가팀 관점을 바꾸며 최종·최고 지수와 사건별 변화를 확인한다. 관전 여부나 로그인 조건은 없다. `incomplete`/`missing`은 점수 대신 사유를 보여주며 다른 팀의 결과나 샘플 점수로 대체하지 않는다. 팀명은 KBO 팀 코드에서 표시명으로 변환한다. [계산·수집 명세](season-mental.md)를 참고한다.
 
 ## 2026 시즌 멘탈지수 조회
 
 홈의 `2026 지난 경기 멘탈지수`에서 시즌 경기 목록과 팀 관점별 계산 결과로 이동한다. 이 경로는 기존 과거 원본 조회 `/records`와 별도다. 로그인이나 관람 이력 없이 조회할 수 있으며, 개인이 실제로 느낀 스트레스를 측정한 값으로 표시하지 않는다.
 
-- `GET /v1/seasons/2026/games`: 팀·날짜 필터와 계산 자료 확보 현황
+- `GET /v1/seasons/2026/games`: 팀·연도·월 필터와 계산 자료 확보 현황
 - `GET /v1/games/{id}/mental?team_id=...`: ready일 때 종료/최고 지수·누적 변화·사건 타임라인
 - missing/incomplete는 점수를 표시하지 않는다. parser 진단 코드는 한국어 안내로 대체한다.
 
@@ -59,3 +59,5 @@ EXPO_PUBLIC_API_URL=https://api.example.com npm start
 ![실제 로컬 API 데이터를 표시한 시즌 상세 웹 화면](screenshots/season-actual-web.png)
 
 위 캡처는 **390×1000 모바일 크기의 웹 렌더링**이며 iOS/Android 네이티브 캡처가 아니다. fixture나 생성 시안이 아닌 로컬 서버 응답을 사용했다. 새 네이티브 빌드·실기기 검증은 별도다.
+
+앱 날짜 선택은 연도와 월만 제공하며 일자를 직접 입력하거나 선택할 수 없다. 시즌은 `month=1..12`로 조회하고 `전체 월` 선택 시 month를 생략한다. 기존 스냅샷 조회도 연월 단위다. 현재 앱의 제공 연도는 2026년이며, 경기 카드의 실제 경기일 표시는 유지한다. 기존 일자 API는 구버전 호환용으로만 남긴다.
