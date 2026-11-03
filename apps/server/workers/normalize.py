@@ -24,6 +24,8 @@ class UnsupportedRelay(ValueError):
 
 
 def _outcome(description):
+    if "병살타로 출루" in description:
+        return "double_play", 1, 0, "double_play"
     if "병살타 아웃" in description:
         return "double_play", None, 1, "double_play"
     if re.search(r"스트라이크 낫 아웃 \(.+(터치아웃|송구아웃|태그아웃)\)$", description):
@@ -162,6 +164,7 @@ def normalize(html, away_team_id, home_team_id, away_runs, home_runs):
                 runner = RUNNER.fullmatch(line)
                 if runner:
                     base, name, action = int(runner[1]), runner[2], runner[3]
+                    action = action.replace("이중도루로 ", "도루로 ")
                     if pending is not None and pending[2] and re.match(
                         r"(도루|폭투|포일|보크)(?:으)?로 ", action
                     ):
@@ -206,7 +209,7 @@ def normalize(html, away_team_id, home_team_id, away_runs, home_runs):
                         if pending is None:
                             queue_runner(cause_outcomes.get(cause, "error"), before, "runner_score")
                     elif "아웃" in action and any(x in action for x in (
-                        "포스아웃", "태그아웃", "도루실패아웃", "견제아웃"
+                        "포스아웃", "태그아웃", "도루실패아웃", "견제아웃", "견제사아웃"
                     )):
                         del runners[name]
                         outs += 1
@@ -284,6 +287,17 @@ def normalize(html, away_team_id, home_team_id, away_runs, home_runs):
                     if last_pitch != (line_out[4], int(line_out[3]), "타격", pa):
                         raise UnsupportedRelay("unmatched_line_out_notice")
                     continue
+                interference_notice = re.fullmatch(
+                    r"(\d+)회([초말]) \d+번타순 (\d+)구 후 타자의 포수 수비 방해로 타자 (\S+) 아웃", line
+                )
+                if interference_notice:
+                    if not (last_terminal == (interference_notice[4], "out", pa)
+                            and last_pitch == (interference_notice[4], int(interference_notice[3]), "타격", pa)
+                            and (int(interference_notice[1]), interference_notice[2]) == (
+                                inning, "초" if side == 0 else "말"
+                            )):
+                        raise UnsupportedRelay("unmatched_interference_out_notice")
+                    continue
                 if "비디오 판독:" in line:
                     review = re.search(r"판독: (\S+) (.+) 관련 (.+)→(.+)$", line)
                     scope = re.match(r"(\d+)회([초말])", line)
@@ -355,6 +369,8 @@ def normalize(html, away_team_id, home_team_id, away_runs, home_runs):
                 if re.fullmatch(r"\d+회[초말] \d+번타순 \d+구 후 \d{2}:\d{2}\s*~\s*\d{2}:\d{2} \(\d+분간\) 우천 관련\(으\)로 경기 중단", line):
                     continue
                 if re.fullmatch(r"\d+회[초말] \d+번타순 \d+구 후 [123]루베이스 맞고 (좌중간|우중간|좌익수|중견수|우익수) 방향으로 굴절", line):
+                    continue
+                if re.fullmatch(r"\d+회[초말] \d+번타순 초구 전 ABS 이슈 해결로 ABS 시스템 경기 진행: \S+ \S+", line):
                     continue
                 if re.fullmatch(r"=+", line):
                     continue

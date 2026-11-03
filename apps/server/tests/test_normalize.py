@@ -337,3 +337,38 @@ def test_first_base_batted_safe_review_matches_actual_batter_destination():
     assert normalize(source({(3, 0): lines}), "AA", "BB", 1, 0).complete
     lines[2] = "가상타자 : 우익수 오른쪽 2루타"
     assert not normalize(source({(3, 0): lines}), "AA", "BB", 1, 0).complete
+
+
+def test_batter_surviving_double_play_requires_two_explicit_runner_outs():
+    lines = ["4번타자 가상둘째", "가상둘째 : 좌중간 2루타", "5번타자 가상첫째", "가상첫째 : 볼넷",
+             "6번타자 가상타자", "가상타자 : 유격수 병살타로 출루",
+             "1루주자 가상첫째 : 포스아웃 (유격수->2루수 2루 터치아웃)",
+             "2루주자 가상둘째 : 태그아웃 (유격수->3루수 태그아웃)"] + three_outs()[:3]
+    result = normalize(source({(3, 0): lines}), "AA", "BB", 1, 0)
+    assert result.complete
+    plays = [e for e in result.events if e['inning'] == 3 and e['half'] == 'top']
+    assert plays[-1]['outs_before'] == 2 and plays[-1]['runners_before'] == 1
+    assert plays[-2]['outcome'] == 'double_play'
+    assert not normalize(source({(3, 0): lines[:7] + lines[8:]}), "AA", "BB", 1, 0).complete
+
+
+def test_double_steal_score_is_one_event_and_pickoff_alias_is_out():
+    lines = ["4번타자 가상셋째", "가상셋째 : 좌중간 3루타", "5번타자 가상첫째", "가상첫째 : 볼넷",
+             "6번타자 가상타자", "- 1구 볼", "1루주자 가상첫째 : 이중도루로 2루까지 진루",
+             "3루주자 가상셋째 : 이중도루로 홈인", "- 2구 볼",
+             "2루주자 가상첫째 : 견제사아웃 (투수 견제->유격수 태그아웃)",
+             "가상타자 : 삼진 아웃"] + three_outs()[:3]
+    result = normalize(source({(3, 0): lines}), "AA", "BB", 2, 0)
+    assert result.complete
+    steals = [e for e in result.events if e['outcome'] == 'stolen_base']
+    assert len(steals) == 1 and steals[0]['runners_before'] == 2
+
+
+def test_catcher_interference_notice_is_not_an_extra_out_and_abs_restore_is_inert():
+    notice = "3회초 1번타순 1구 후 타자의 포수 수비 방해로 타자 가상타자1 아웃"
+    lines = ["3회초 1번타순 초구 전 ABS 이슈 해결로 ABS 시스템 경기 진행: 가상팀 가상타자1"]
+    lines += three_outs()[:3] + [notice] + three_outs()[3:]
+    result = normalize(source({(3, 0): lines}), "AA", "BB", 1, 0)
+    assert result.complete and len(result.events) == 55
+    lines[4] = notice.replace("가상타자1", "다른타자")
+    assert not normalize(source({(3, 0): lines}), "AA", "BB", 1, 0).complete
