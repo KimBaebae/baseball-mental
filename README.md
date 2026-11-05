@@ -106,7 +106,7 @@ npx eas-cli@latest login
 npx eas-cli@latest project:info
 ```
 
-기존 EAS 프로젝트 연결은 `apps/mobile/app.json`에 유지합니다. 저장소 이름과 Expo slug는 독립적이므로 Expo slug는 그대로 둡니다. 모든 EAS 명령은 `apps/mobile`에서 실행합니다. 스토어 제출 전 임시 iOS `bundleIdentifier`와 Android `package`를 최종 확인합니다.
+기존 EAS 프로젝트 연결은 `apps/mobile/app.json`에 유지합니다. 저장소 이름과 Expo slug는 독립적이므로 Expo slug는 그대로 둡니다. 모든 EAS 명령은 `apps/mobile`에서 실행합니다. 앱 표시 이름은 `왜저럴까`, 양 플랫폼 식별자는 `com.kimbaebae.baseballmental`입니다.
 
 | 프로필 | 용도 |
 |---|---|

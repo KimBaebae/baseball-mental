@@ -16,7 +16,7 @@
 - GitHub `mobile-release` Environment는 생성했고 배포 가능 브랜치를 `main`으로 제한했다. 승인자는 설정하지 않았다.
 - 해당 Expo 프로젝트 권한이 있는 `EXPO_TOKEN`을 Environment secret으로 등록한다. 값을 저장소에 넣지 않는다.
 - EAS production 환경에 공개 가능한 HTTPS `EXPO_PUBLIC_API_URL`을 설정한다. API URL은 앱에 포함되는 값이므로 비밀이 아니다. 서버의 DB URI·푸시 서버 키는 앱 환경에 넣지 않는다.
-- 최종 앱 식별자/이름을 확정한다. 현재 `com.baseballmentalpoc.app` 식별자가 유지되어 있으며 자동 변경하지 않았다.
+- 최종 표시 이름 `왜저럴까`와 양 플랫폼 식별자 `com.kimbaebae.baseballmental`를 앱 설정에 반영했다. 새 식별자의 스토어 등록·서명은 별도로 확인한다.
 - EAS에서 iOS App Store 배포 인증서·프로비저닝과 Android keystore를 준비한다. 첫 production 설정은 대화형 CLI로 확인한다. 자동 workflow는 자격 증명을 물어보지 않고 실패한다.
 - `eas.json`의 `appVersionSource`는 remote로 변경했다. production의 `autoIncrement=true`로 빌드 번호 중복을 방지한다. 최초 실행 전 `eas build:version:set`으로 플랫폼별 원격 버전을 스토어의 기존 최대 버전과 맞춘다. 앱의 사용자 표시 version은 별도로 변경한다.
 - EAS 빌드 할당량/비용을 확인한다. 이 workflow를 실행하면 원격 빌드가 실제 발생한다.

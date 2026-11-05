@@ -32,7 +32,7 @@ xcrun simctl boot <UDID>
 open 'devices://device/open?id=<UDID>'
 # EAS에서 받은 아카이브를 푼 뒤 실제 .app 경로를 지정한다.
 xcrun simctl install <UDID> /path/to/app.app
-xcrun simctl launch <UDID> com.baseballmentalpoc.app
+xcrun simctl launch <UDID> com.kimbaebae.baseballmental
 ```
 
 ## Android
@@ -45,7 +45,7 @@ emulator -avd <AVD_NAME>
 adb devices
 # adb devices에 표시된 에뮬레이터의 실제 serial을 사용한다.
 adb -s <SERIAL> install -r /path/to/app.apk
-adb -s <SERIAL> shell am start -n com.baseballmentalpoc.app/.MainActivity
+adb -s <SERIAL> shell am start -n com.kimbaebae.baseballmental/.MainActivity
 ```
 
 ## 확인할 흐름

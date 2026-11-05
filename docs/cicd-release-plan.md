@@ -18,7 +18,7 @@
 | GitHub 배포 설정 | repository secrets 0개, environments 0개, rulesets 0개, main protected=false | EAS/클라우드 배포 인증·승인 환경·필수 체크 미설정. EAS 측 비밀값 유무와는 별개 |
 | EAS build | development / simulator / preview / desktop-preview | `production`, `submit` 설정 없음 |
 | EAS 최근 빌드 | iOS desktop-preview, Android desktop-preview 및 preview 모두 FINISHED | 모두 INTERNAL. iOS는 시뮬레이터 앱, Android는 APK |
-| 버전·식별자 | `왜저럴까 POC`, version 1.0.0, `com.baseballmentalpoc.app`, scheme `baseball-mental-poc` | 출시 명칭·식별자 확정, buildNumber/versionCode 증가 규칙 필요 |
+| 버전·식별자 | `왜저럴까`, version 1.0.0, 양 플랫폼 `com.kimbaebae.baseballmental`, scheme `baseball-mental` | 새 식별자의 스토어 등록·서명 자격 증명 확인 필요 |
 | 서버 운영 | 로컬 Compose + Dockerfile, 운영 배포 workflow/IaC 없음 | 기존 문서상 Cloud Run 기준안. 실제 프로젝트·리전·DB·비용 미확정 |
 | OTA | EAS Update 채널·runtimeVersion 및 배포 workflow 없음 | 첫 출시 필수 아님. 도입 시 호환성·되돌리기 별도 설계 |
 

@@ -6,7 +6,7 @@ Appium + WebdriverIO + TypeScript로 설치된 iOS·Android 앱을 조작한다.
 
 - Node.js 22.12 이상, npm, macOS/Xcode 및 iOS Simulator
 - Android SDK/Emulator, JDK 21. `ANDROID_HOME`, `JAVA_HOME`, SDK `platform-tools`의 PATH 설정
-- 가상 기기에 `com.baseballmentalpoc.app` 설치: [설치 방법](simulator-testing.md)
+- 가상 기기에 `com.kimbaebae.baseballmental` 설치: [설치 방법](simulator-testing.md)
 - 테스트 대상 기기만 선택하도록 `UI_UDID`를 반드시 지정한다. 앱을 재시작하므로 진행 중인 샘플 재생은 초기화된다.
 
 저장소 루트에서 최초 한 번:

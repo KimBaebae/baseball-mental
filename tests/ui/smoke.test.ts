@@ -10,7 +10,7 @@ if (platform !== 'ios' && platform !== 'android') {
 }
 const udid = process.env.UI_UDID;
 if (!udid) throw new Error('Set UI_UDID to the intended simulator/emulator ID');
-const appId = 'com.baseballmentalpoc.app';
+const appId = 'com.kimbaebae.baseballmental';
 const artifacts = path.resolve('artifacts/ui', `${platform}-${Date.now()}`);
 
 test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async () => {

@@ -2,7 +2,7 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: config.name ?? '왜저럴까 POC',
+  name: config.name ?? '왜저럴까',
   slug: config.slug ?? 'baseball-rn-poc',
   android: {
     ...config.android,

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "왜저럴까 POC",
+    "name": "왜저럴까",
     "slug": "baseball-rn-poc",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.baseballmentalpoc.app"
+      "bundleIdentifier": "com.kimbaebae.baseballmental"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.baseballmentalpoc.app"
+      "package": "com.kimbaebae.baseballmental"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,7 +27,7 @@
       "expo-router",
       "expo-notifications"
     ],
-    "scheme": "baseball-mental-poc",
+    "scheme": "baseball-mental",
     "extra": {
       "router": {
         "asyncRoutes": {
