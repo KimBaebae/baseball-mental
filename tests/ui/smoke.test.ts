@@ -30,6 +30,7 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
         'appium:appPackage': appId,
         'appium:appActivity': '.MainActivity',
         'appium:autoLaunch': false,
+        'appium:uiautomator2ServerLaunchTimeout': 90_000,
       }),
     },
   });
@@ -68,6 +69,14 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
       await driver.terminateApp(appId);
       await driver.activateApp(appId);
       await (await visible('2026 지난 경기 멘탈지수')).click();
+      const { width, height } = await driver.getWindowRect();
+      await driver.performActions([{ type: 'pointer', id: 'season-scroll', parameters: { pointerType: 'touch' }, actions: [
+        { type: 'pointerMove', duration: 0, x: Math.round(width / 2), y: Math.round(height * 0.76) },
+        { type: 'pointerDown', button: 0 },
+        { type: 'pointerMove', duration: 600, x: Math.round(width / 2), y: Math.round(height * 0.51) },
+        { type: 'pointerUp', button: 0 },
+      ] }]);
+      await driver.releaseActions();
       await visible('조회된 종료 경기 729경기', false, 120_000);
       await visible('지수 확인 가능 703 · 자료 확인 중 26 · 준비 전 0');
     }
