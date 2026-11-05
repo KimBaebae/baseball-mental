@@ -4,6 +4,7 @@ export const teams = [
   { id: 'LT', name: '롯데' }, { id: 'NC', name: 'NC' }, { id: 'SK', name: 'SSG' }, { id: 'WO', name: '키움' },
 ];
 export const teamName = (id: string) => teams.find(team => team.id === id)?.name ?? id;
+export const isTeamId = (id: unknown): id is string => typeof id === 'string' && teams.some(team => team.id === id);
 export const indexLabel = { ready: '지수 확인 가능', incomplete: '자료 확인 중', missing: '지수 준비 전' } as const;
 
 export function mentalReason(reason: string | null, status: 'ready' | 'incomplete' | 'missing'): string {

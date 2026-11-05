@@ -5,10 +5,16 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { colors } from '../ui';
 import { games } from '../domain/game';
+import { TeamPreferenceProvider, useTeamPreference } from '../team-preference';
 import type { NotificationResponse } from 'expo-notifications';
 
 export default function Layout() {
+  return <TeamPreferenceProvider><AppShell /></TeamPreferenceProvider>;
+}
+
+function AppShell() {
   const [fontsLoaded, fontError] = useFonts({ BagelFatOne: require('../../assets/fonts/BagelFatOne-Regular.ttf') });
+  const { teamId, status } = useTeamPreference();
   useEffect(() => {
     if (Platform.OS === 'web') return;
     let cleanup: (() => void) | undefined;
@@ -31,12 +37,15 @@ export default function Layout() {
   }, []);
   if (!fontsLoaded && !fontError) return <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center' }}><StatusBar style="light" /><ActivityIndicator accessibilityLabel="화면 준비 중" color={colors.ink} /></View>;
   return <><StatusBar style="light" /><Stack screenOptions={{ headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink, contentStyle: { backgroundColor: colors.bg } }}>
-    <Stack.Screen name="index" options={{ title: '왜저럴까 · 기술 검증' }} />
-    <Stack.Screen name="game/[id]" options={{ title: '오늘의 멘탈' }} />
-    <Stack.Screen name="season/index" options={{ title: '2026 지난 경기' }} />
-    <Stack.Screen name="season/[id]" options={{ title: '경기 멘탈지수' }} />
-    <Stack.Screen name="records/index" options={{ title: '서버 경기 기록' }} />
-    <Stack.Screen name="records/[id]" options={{ title: '서버 경기 상세' }} />
-    <Stack.Screen name="notifications" options={{ title: '알림 검증' }} />
+    <Stack.Screen name="index" options={{ title: '왜저럴까' }} />
+    <Stack.Protected guard={status === 'ready' && !!teamId} redirectTo="/">
+      <Stack.Screen name="team" options={{ title: '응원팀 변경' }} />
+      <Stack.Screen name="game/[id]" options={{ title: '오늘의 멘탈' }} />
+      <Stack.Screen name="season/index" options={{ title: '2026 지난 경기' }} />
+      <Stack.Screen name="season/[id]" options={{ title: '경기 멘탈지수' }} />
+      <Stack.Screen name="records/index" options={{ title: '서버 경기 기록' }} />
+      <Stack.Screen name="records/[id]" options={{ title: '서버 경기 상세' }} />
+      <Stack.Screen name="notifications" options={{ title: '알림 검증' }} />
+    </Stack.Protected>
   </Stack></>;
 }

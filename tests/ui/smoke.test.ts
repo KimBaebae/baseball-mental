@@ -50,6 +50,18 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
   try {
     await driver.terminateApp(appId);
     await driver.activateApp(appId);
+    const teamChoice = platform === 'ios'
+      ? '-ios predicate string:label == "두산 선택" AND accessible == true'
+      : '~두산 선택';
+    await driver.waitUntil(async () => (await driver.$(teamChoice)).isExisting() || (await driver.$(label('멘탈 기록 열기 →'))).isExisting(), { timeout: 30_000 });
+    if (await (await driver.$(teamChoice)).isExisting()) {
+      await (await driver.$(teamChoice)).click();
+      await (await visible('이 팀으로 시작')).click();
+      await visible('두산 팬의 관전석');
+      await driver.terminateApp(appId);
+      await driver.activateApp(appId);
+      await visible('두산 팬의 관전석');
+    }
     await (await visible('멘탈 기록 열기 →', true)).click();
     await visible('LG vs 두산');
     // Fixed product expectations: do not import the implementation's scoring function.
@@ -69,6 +81,10 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
       await driver.terminateApp(appId);
       await driver.activateApp(appId);
       await (await visible('2026 지난 경기 멘탈지수')).click();
+      const allTeams = platform === 'ios'
+        ? '-ios predicate string:label == "전체 경기 필터" AND accessible == true'
+        : '~전체 경기 필터';
+      await (await driver.$(allTeams)).click();
       const { width, height } = await driver.getWindowRect();
       await driver.performActions([{ type: 'pointer', id: 'season-scroll', parameters: { pointerType: 'touch' }, actions: [
         { type: 'pointerMove', duration: 0, x: Math.round(width / 2), y: Math.round(height * 0.76) },

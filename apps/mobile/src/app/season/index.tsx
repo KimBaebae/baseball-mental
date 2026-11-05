@@ -5,13 +5,19 @@ import { createGamesApi, type SeasonGame } from '../../api/games';
 import { YearMonthPicker } from '../../YearMonthPicker';
 import { teams, teamName, indexLabel } from '../../domain/teams';
 import { useRemote } from '../../hooks/useRemote';
+import { useTeamPreference } from '../../team-preference';
 import { Button, Card, colors, s } from '../../ui';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
 const statusLabel = { completed: '경기 종료', scheduled: '예정', cancelled: '취소', unknown: '상태 확인 중' } as const;
 
 export default function Season() {
-  const [team, setTeam] = useState('');
+  const { teamId } = useTeamPreference();
+  return <SeasonContent key={teamId} preferredTeam={teamId ?? ''} />;
+}
+
+function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
+  const [team, setTeam] = useState(preferredTeam);
   const [season, setSeason] = useState(2026);
   const [month, setMonth] = useState<number | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -25,7 +31,7 @@ export default function Season() {
       <Text style={s.title}>{season} 시즌 멘탈지수</Text>
       <Text style={s.body}>정규시즌·포스트시즌 · 시범경기 제외</Text>
       <Text style={s.body}>경기 기록을 바탕으로 계산한 재미용 지수예요. 직접 관람하지 않은 경기도 팀 관점으로 볼 수 있어요. 내 감정이나 관람 기록을 측정한 값은 아니에요.</Text>
-      <Text style={s.heading}>응원팀으로 찾기</Text>
+      <Text style={s.heading}>팀으로 찾기</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
         {[{ id: '', name: '전체' }, ...teams].map(item => <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`${item.name} 경기 필터`} accessibilityState={{ selected: team === item.id }}
           onPress={() => setTeam(item.id)} style={{ paddingHorizontal: 18, paddingVertical: 14, minHeight: 50, borderRadius: 999, borderWidth: 1, borderColor: colors.line, backgroundColor: team === item.id ? colors.primary : colors.bg }}>
