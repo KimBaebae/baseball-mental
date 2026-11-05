@@ -10,7 +10,8 @@ import { useTeamPreference } from '../../team-preference';
 import { teamVisuals, useTeamVisual } from '../../team-visual';
 import { Button, Card, colors, s } from '../../ui';
 
-const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
+// Render Free may need time to wake before the first season request.
+const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL, fetch, 45_000);
 const season = 2026;
 const statusLabel = { completed: '경기 종료', scheduled: '예정', cancelled: '취소', unknown: '상태 확인 중' } as const;
 type Picker = 'team' | 'month' | null;
@@ -26,11 +27,12 @@ function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
   const [picker, setPicker] = useState<Picker>(null);
   const [attempt, setAttempt] = useState(0);
   const visual = useTeamVisual(team);
-  const load = useCallback((signal: AbortSignal) => api.season(season, { team }, signal), [team]);
-  const { loading, data, error } = useRemote(`${season}:${team}:${attempt}`, load);
+  const load = useCallback((signal: AbortSignal) => api.season(season, {}, signal), []);
+  const { loading, data, error } = useRemote(`${season}:${attempt}`, load);
   const availableMonths = useMemo(() => seasonMonths(data?.games ?? []), [data]);
-  const month = selectedMonth ?? latestCompletedMonth(data?.games ?? []) ?? availableMonths[0];
-  const games = useMemo(() => (data?.games ?? []).filter(game => Number(game.game_date.slice(5, 7)) === month), [data, month]);
+  const teamGames = useMemo(() => (data?.games ?? []).filter(game => game.away_team_id === team || game.home_team_id === team), [data, team]);
+  const month = selectedMonth ?? latestCompletedMonth(teamGames) ?? availableMonths[0];
+  const games = useMemo(() => teamGames.filter(game => Number(game.game_date.slice(5, 7)) === month), [teamGames, month]);
   const completed = games.filter(game => game.status === 'completed');
   const indexed = completed.filter(game => game.index_status === 'ready').length;
   const incomplete = completed.filter(game => game.index_status === 'incomplete').length;
