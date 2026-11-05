@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: baseball-mental-api
+    runtime: docker
+    plan: free
+    dockerContext: apps/server
+    dockerfilePath: apps/server/Dockerfile
+    healthCheckPath: /health/live
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: MONGODB_DATABASE
+        value: baseball_mental_production
+      - key: ENABLE_KBO_PROBE
+        value: "false"
+      - key: MONGODB_URI
+        sync: false
