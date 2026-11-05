@@ -22,7 +22,7 @@ test('recovery reduces stress and clipping preserves raw history', () => {
 
 
 // API contract failures must never turn into sample games or an empty success.
-import { createGamesApi, validGameDate } from '../src/api/games.ts';
+import { createGamesApi, validGameDate, type SeasonGame } from '../src/api/games.ts';
 const snapshot = {
   game_id: '20260901LGOB0', game_date: '2026-09-01', series_id: '0',
   away_team_id: 'LG', home_team_id: 'OB', away_runs: 3, home_runs: 1,
@@ -67,7 +67,7 @@ test('API reports timeout and propagates cancellation', async () => {
 });
 
 
-const seasonGame = {
+const seasonGame: SeasonGame = {
   game_id: '20260901LGOB0', game_date: '2026-09-01', season: 2026, series_id: '0',
   away_team_id: 'LG', home_team_id: 'OB', status: 'completed', away_runs: 3, home_runs: 1,
   venue: '잠실', index_status: 'ready',
@@ -160,4 +160,14 @@ test('snapshot month query rejects invalid months and out-of-month data', async 
   await assert.rejects(api.listMonth(2026, 0), /연도와 월/);
   await assert.rejects(api.listMonth(2026, 9.5), /연도와 월/);
   await assert.rejects(api.listMonth(2026, 8), /일치/);
+});
+
+import { latestCompletedMonth, seasonMonths } from '../src/domain/season-month.ts';
+test('home defaults to the latest completed month and hides offseason months', () => {
+  const march = { ...seasonGame, game_date: '2026-03-28', status: 'completed' as const };
+  const october = { ...seasonGame, game_date: '2026-10-30', status: 'scheduled' as const };
+  const games = [march, { ...seasonGame, game_date: '2026-09-12', status: 'completed' as const }, october];
+  assert.equal(latestCompletedMonth(games), 9);
+  assert.deepEqual(seasonMonths(games), [3, 4, 5, 6, 7, 8, 9, 10]);
+  assert.equal(latestCompletedMonth([october]), null);
 });

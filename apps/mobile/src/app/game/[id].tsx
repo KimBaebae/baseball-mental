@@ -3,8 +3,10 @@ import { ScrollView, Text, View, Share } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { games, summarize } from '../../domain/game';
 import { Button, Card, colors, s } from '../../ui';
+import { useTeamVisual } from '../../team-visual';
 
 export default function Game() {
+  const visual = useTeamVisual();
   const { id } = useLocalSearchParams<{ id: string }>();
   const game = games.find(item => item.id === id);
   const [count, setCount] = useState(0);
@@ -13,7 +15,7 @@ export default function Game() {
   const plays = game.plays.slice(0, count);
   const result = summarize(plays);
   const label = result.level >= 70 ? '잠깐, 심호흡이 필요해요' : result.level >= 40 ? '조금씩 끓어오르는 중' : '아직은 평온한 마음';
-  return <ScrollView style={s.page} contentContainerStyle={s.content}>
+  return <ScrollView style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={s.content}>
     <Text style={s.eyebrow}>가상 경기 · {game.home} 응원</Text>
     <Text style={s.title}>{game.away} vs {game.home}</Text>
     <Card>

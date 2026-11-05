@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { colors } from '../ui';
 import { games } from '../domain/game';
 import { TeamPreferenceProvider, useTeamPreference } from '../team-preference';
+import { useTeamVisual } from '../team-visual';
 import type { NotificationResponse } from 'expo-notifications';
 
 export default function Layout() {
@@ -15,6 +16,7 @@ export default function Layout() {
 function AppShell() {
   const [fontsLoaded, fontError] = useFonts({ BagelFatOne: require('../../assets/fonts/BagelFatOne-Regular.ttf') });
   const { teamId, status } = useTeamPreference();
+  const visual = useTeamVisual();
   useEffect(() => {
     if (Platform.OS === 'web') return;
     let cleanup: (() => void) | undefined;
@@ -36,10 +38,12 @@ function AppShell() {
     return () => { active = false; cleanup?.(); };
   }, []);
   if (!fontsLoaded && !fontError) return <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center' }}><StatusBar style="light" /><ActivityIndicator accessibilityLabel="화면 준비 중" color={colors.ink} /></View>;
-  return <><StatusBar style="light" /><Stack screenOptions={{ headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink, contentStyle: { backgroundColor: colors.bg } }}>
+  return <><StatusBar style="light" /><Stack screenOptions={{ headerStyle: { backgroundColor: visual.soft }, headerTintColor: colors.ink, contentStyle: { backgroundColor: visual.soft } }}>
     <Stack.Screen name="index" options={{ title: '왜저럴까' }} />
     <Stack.Protected guard={status === 'ready' && !!teamId} redirectTo="/">
-      <Stack.Screen name="team" options={{ title: '응원팀 변경' }} />
+      <Stack.Screen name="team" options={{ headerShown: false, presentation: 'fullScreenModal' }} />
+      <Stack.Screen name="settings" options={{ title: '설정' }} />
+      <Stack.Screen name="demo" options={{ title: '가상 경기 체험' }} />
       <Stack.Screen name="game/[id]" options={{ title: '오늘의 멘탈' }} />
       <Stack.Screen name="season/index" options={{ title: '2026 지난 경기' }} />
       <Stack.Screen name="season/[id]" options={{ title: '경기 멘탈지수' }} />

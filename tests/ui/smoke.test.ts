@@ -38,6 +38,7 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
   const label = (text: string) => platform === 'ios'
     ? `-ios predicate string:label == ${JSON.stringify(text)} AND accessible == true`
     : `android=new UiSelector().text(${JSON.stringify(text)})`;
+  const accessible = (text: string) => platform === 'ios' ? label(text) : `~${text}`;
   async function visible(text: string, first = false, timeout = 15_000) {
     const selector = label(text);
     if (first) {
@@ -53,7 +54,7 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
     const teamChoice = platform === 'ios'
       ? '-ios predicate string:label == "두산 선택" AND accessible == true'
       : '~두산 선택';
-    await driver.waitUntil(async () => (await driver.$(teamChoice)).isExisting() || (await driver.$(label('멘탈 기록 열기 →'))).isExisting(), { timeout: 30_000 });
+    await driver.waitUntil(async () => (await driver.$(teamChoice)).isExisting() || (await driver.$(accessible('설정 열기'))).isExisting(), { timeout: 30_000 });
     if (await (await driver.$(teamChoice)).isExisting()) {
       await (await driver.$(teamChoice)).click();
       await (await visible('이 팀으로 시작')).click();
@@ -62,6 +63,8 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
       await driver.activateApp(appId);
       await visible('두산 팬의 관전석');
     }
+    await (await driver.$(accessible('설정 열기'))).click();
+    await (await visible('가상 경기 체험')).click();
     await (await visible('멘탈 기록 열기 →', true)).click();
     await visible('LG vs 두산');
     // Fixed product expectations: do not import the implementation's scoring function.
@@ -80,21 +83,16 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
     if (process.env.UI_VERIFY_SEASON === '1') {
       await driver.terminateApp(appId);
       await driver.activateApp(appId);
-      await (await visible('2026 지난 경기 멘탈지수')).click();
-      const allTeams = platform === 'ios'
-        ? '-ios predicate string:label == "전체 경기 필터" AND accessible == true'
-        : '~전체 경기 필터';
-      await (await driver.$(allTeams)).click();
-      const { width, height } = await driver.getWindowRect();
-      await driver.performActions([{ type: 'pointer', id: 'season-scroll', parameters: { pointerType: 'touch' }, actions: [
-        { type: 'pointerMove', duration: 0, x: Math.round(width / 2), y: Math.round(height * 0.76) },
-        { type: 'pointerDown', button: 0 },
-        { type: 'pointerMove', duration: 600, x: Math.round(width / 2), y: Math.round(height * 0.51) },
-        { type: 'pointerUp', button: 0 },
-      ] }]);
-      await driver.releaseActions();
-      await visible('조회된 종료 경기 729경기', false, 120_000);
-      await visible('지수 확인 가능 703 · 자료 확인 중 26 · 준비 전 0');
+      await driver.waitUntil(async () => (await driver.$(accessible('설정 열기'))).isExisting(), { timeout: 120_000 });
+      await (await driver.$(accessible('연도와 월 선택'))).click();
+      await visible('3월');
+      assert.equal(await (await driver.$(label('2월'))).isExisting(), false, 'Offseason month must be hidden');
+      await (await driver.$(accessible('선택 닫기'))).click();
+      const currentTeamFilter = platform === 'ios'
+        ? '-ios predicate string:label ENDSWITH "경기 필터" AND accessible == true'
+        : 'android=new UiSelector().descriptionContains("경기 필터")';
+      await (await driver.$(currentTeamFilter)).click();
+      await (await driver.$(accessible('LG 경기 필터'))).waitForDisplayed();
     }
     await driver.saveScreenshot(path.join(artifacts, 'passed.png'));
     await writeFile(path.join(artifacts, 'result.json'), JSON.stringify({ platform, udid, passed: true, scores, verifiedSeason: process.env.UI_VERIFY_SEASON === '1' }, null, 2));

@@ -2,10 +2,18 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { PropsWithChildren } from 'react';
 
 import { theme } from './theme';
+import { useTeamVisual } from './team-visual';
 export const colors = theme.colors;
-export function Button({ title, onPress, disabled = false }: { title: string; onPress: () => void; disabled?: boolean }) {
+export function textOn(hex: string): string {
+  const channels = [1, 3, 5].map(index => parseInt(hex.slice(index, index + 2), 16) / 255)
+    .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722 > 0.18 ? '#171B18' : '#FFFFFF';
+}
+export function Button({ title, onPress, disabled = false, accent }: { title: string; onPress: () => void; disabled?: boolean; accent?: string }) {
+  const visual = useTeamVisual();
+  const buttonColor = accent ?? visual.accent;
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
-    style={({ pressed }) => [s.button, { opacity: disabled ? 0.4 : pressed ? 0.75 : 1 }]}><Text style={s.buttonText}>{title}</Text></Pressable>;
+    style={({ pressed }) => [s.button, { backgroundColor: buttonColor, opacity: disabled ? 0.4 : pressed ? 0.75 : 1 }]}><Text style={[s.buttonText, { color: textOn(buttonColor) }]}>{title}</Text></Pressable>;
 }
 export function Card({ children }: PropsWithChildren) { return <View style={s.card}>{children}</View>; }
 export const s = StyleSheet.create({
@@ -18,5 +26,5 @@ export const s = StyleSheet.create({
   card: { paddingVertical: theme.spacing.page, gap: theme.spacing.item, borderBottomWidth: 1, borderColor: colors.line },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12 },
   button: { backgroundColor: colors.primary, borderRadius: theme.radius.control, padding: theme.spacing.control, alignItems: 'center', minHeight: 50 },
-  buttonText: { color: colors.onPrimary, fontSize: theme.type.button, fontFamily: 'BagelFatOne', textAlign: 'center' },
+  buttonText: { color: '#FFFFFF', fontSize: theme.type.button, fontFamily: 'BagelFatOne', textAlign: 'center' },
 });

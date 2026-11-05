@@ -5,6 +5,7 @@ import { createGamesApi } from '../../api/games';
 import { teamName, indexLabel, mentalReason, gameIdentity } from '../../domain/teams';
 import { useRemote } from '../../hooks/useRemote';
 import { Button, Card, colors, s } from '../../ui';
+import { useTeamVisual } from '../../team-visual';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
 const outcomes: Record<string, string> = {
@@ -23,6 +24,7 @@ export default function SeasonGame() {
 }
 
 function Detail({ id, team }: { id: string; team: string }) {
+  const visual = useTeamVisual(team);
   const [attempt, setAttempt] = useState(0);
   const key = `${id}:${team}:${attempt}`;
   const load = useCallback((signal: AbortSignal) => api.mental(id, team, signal), [id, team]);
@@ -30,7 +32,7 @@ function Detail({ id, team }: { id: string; team: string }) {
   const identity = gameIdentity(id);
   const other = identity && (team === identity.away ? identity.home : team === identity.home ? identity.away : null);
   const ready = data?.status === 'ready';
-  return <FlatList style={s.page} contentContainerStyle={s.content} data={ready ? data.events : []} keyExtractor={event => event.event_id} initialNumToRender={15}
+  return <FlatList style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={s.content} data={ready ? data.events : []} keyExtractor={event => event.event_id} initialNumToRender={15}
     ListHeaderComponent={<View style={{ gap: 18 }}>
       <Text style={s.eyebrow}>{teamName(team)} 관점 · 지난 경기</Text>
       <Text style={s.title}>그날의 멘탈지수</Text>

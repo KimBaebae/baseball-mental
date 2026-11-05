@@ -4,11 +4,13 @@ import { router } from 'expo-router';
 import { createGamesApi, type GameSnapshot } from '../../api/games';
 import { YearMonthPicker } from '../../YearMonthPicker';
 import { Button, Card, colors, s } from '../../ui';
+import { useTeamVisual } from '../../team-visual';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
 const currentMonthInKorea = () => new Date(Date.now() + 9 * 60 * 60 * 1000).getUTCMonth() + 1;
 
 export default function Records() {
+  const visual = useTeamVisual();
   const [year, setYear] = useState(2026);
   const [month, setMonth] = useState(currentMonthInKorea);
   const [attempt, setAttempt] = useState(0);
@@ -23,7 +25,7 @@ export default function Records() {
     return () => controller.abort();
   }, [year, month, attempt]);
   const reload = () => { setLoading(true); setError(''); setGames([]); setAttempt(value => value + 1); };
-  return <ScrollView style={s.page} contentContainerStyle={s.content}>
+  return <ScrollView style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={s.content}>
     <Text style={s.title}>서버 경기 기록</Text>
     <Text style={s.body}>서버에 저장된 과거 경기 조회 결과예요. 실시간 중계·개인 멘탈 기록과는 별개이며, 아직 검증 중인 자료예요.</Text>
     <YearMonthPicker year={year} month={month} onChange={(value, selected) => { setYear(value); if (selected !== null) setMonth(selected); reload(); }} />
