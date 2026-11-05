@@ -26,7 +26,7 @@ function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [picker, setPicker] = useState<Picker>(null);
   const [attempt, setAttempt] = useState(0);
-  const visual = useTeamVisual(team);
+  const visual = useTeamVisual();
   const load = useCallback((signal: AbortSignal) => api.season(season, {}, signal), []);
   const { loading, data, error } = useRemote(`${season}:${attempt}`, load);
   const availableMonths = useMemo(() => seasonMonths(data?.games ?? []), [data]);
@@ -45,9 +45,9 @@ function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
       ListHeaderComponent={<View style={{ gap: 17 }}>
         <View style={{ alignItems: 'center', paddingTop: 12, gap: 8 }}>
           <View style={{ width: 116, height: 116, borderRadius: 34, alignItems: 'center', justifyContent: 'center', backgroundColor: visual.soft }}>
-            <Text accessibilityLabel={`${teamName(team)} 상징 이모지`} style={{ fontSize: team === 'LG' ? 40 : 65 }}>{visual.emoji}</Text>
+            <Text accessibilityLabel={`${teamName(preferredTeam)} 상징 이모지`} style={{ fontSize: preferredTeam === 'LG' ? 40 : 65 }}>{visual.emoji}</Text>
           </View>
-          <Text style={[s.eyebrow, { color: visual.accent }]}>{teamName(team)} 팬의 관전석</Text>
+          <Text style={[s.eyebrow, { color: visual.accent }]}>{teamName(preferredTeam)} 팬의 관전석</Text>
           <Pressable accessibilityRole="button" accessibilityLabel="연도와 월 선택" onPress={() => setPicker('month')} style={{ minHeight: 52, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={s.title}>{season}년 {month}월 ⌄</Text>
           </Pressable>
