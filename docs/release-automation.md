@@ -13,7 +13,7 @@
 
 ## 최초 실행 전 필요한 외부 설정
 
-- GitHub에 `mobile-release` Environment를 만들고 배포 가능 브랜치를 main으로 제한한다. 필요하면 승인자를 설정한다. workflow의 environment 선언만으로 승인 규칙이 생기는 것은 아니다.
+- GitHub `mobile-release` Environment는 생성했고 배포 가능 브랜치를 `main`으로 제한했다. 승인자는 설정하지 않았다.
 - 해당 Expo 프로젝트 권한이 있는 `EXPO_TOKEN`을 Environment secret으로 등록한다. 값을 저장소에 넣지 않는다.
 - EAS production 환경에 공개 가능한 HTTPS `EXPO_PUBLIC_API_URL`을 설정한다. API URL은 앱에 포함되는 값이므로 비밀이 아니다. 서버의 DB URI·푸시 서버 키는 앱 환경에 넣지 않는다.
 - 최종 앱 식별자/이름을 확정한다. 현재 `com.baseballmentalpoc.app` 식별자가 유지되어 있으며 자동 변경하지 않았다.
@@ -29,11 +29,13 @@ GitHub Actions → Build mobile release candidate → Run workflow → main → 
 
 `production` 프로필은 iOS 시뮬레이터 `.app`이 아닌 스토어용 서명 빌드, Android는 AAB를 생성한다. 개발/preview 프로필은 유지된다. 결과 artifact의 `build.json`에서 빌드 ID를 확인하고 Expo 프로젝트 빌드 화면에서 다운로드한다. workflow가 실패/시간 초과/취소되어도 이미 시작한 EAS 원격 빌드가 중단된다고 가정하지 않는다. Expo에서 해당 빌드 상태를 확인한 후 재실행한다.
 
-현재 프로필은 **스토어 제출 가능한 형식의 빌드 구성**이며 서비스 기능·데이터·정책 준비 완료를 의미하지 않는다. API URL 미설정이나 서버 미구축 문제를 스토어 형식 빌드 성공으로 대체하지 않는다. 실제 스토어 자격 증명과 EAS production 빌드는 아직 이 workflow에서 검증하지 않았다.
+현재 프로필은 **스토어 제출 가능한 형식의 빌드 구성**이며 서비스 기능·데이터·정책 준비 완료를 의미하지 않는다. 운영 API와 DB 연결 및 preview 빌드의 양 플랫폼 Appium 조회는 확인했다. 실제 스토어 자격 증명과 EAS production 빌드는 아직 이 workflow에서 검증하지 않았다.
+
+2026-11-05 계정 점검: `mobile-release` Environment의 `main` 브랜치 제한을 GitHub API에서 다시 읽어 확인했다. Expo 토큰은 개인 계정 `hyeji.kim`의 Developer 권한으로 제한해 만들고 `EXPO_TOKEN` Environment secret으로 저장했으며, GitHub API에서 이름과 갱신 시각을 확인했다. EAS production 환경의 API 주소와 원격 iOS/Android 빌드 번호 1도 확인했다. 이 workflow의 실제 빌드 실행 결과는 별도로 기록한다.
 
 ## 아직 남은 단계
 
-- 운영 API 및 데이터 기능 완성, EAS production API 주소 설정, production 자격 증명 확인
+- 자동 이벤트·개인 기록·통계 등 제품 기능 완성, production 서명 자격 증명 확인
 - 네이티브 Appium CI 연결 및 실제 API 흐름 테스트 (현재 로컬 smoke만 검증됨)
 - TestFlight/Play 업로드: 계정·앱 레코드·API 인증을 준비한 뒤 **선택한 빌드 ID**로 제출
 - Android 최초 수동 Play 업로드, 신규 개인 계정에 적용되는 비공개 테스트/production access
