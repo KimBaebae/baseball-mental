@@ -37,13 +37,13 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
   const label = (text: string) => platform === 'ios'
     ? `-ios predicate string:label == ${JSON.stringify(text)} AND accessible == true`
     : `android=new UiSelector().text(${JSON.stringify(text)})`;
-  async function visible(text: string, first = false) {
+  async function visible(text: string, first = false, timeout = 15_000) {
     const selector = label(text);
     if (first) {
-      await driver.waitUntil(async () => (await driver.$$(selector)).length > 0, { timeout: 15_000 });
+      await driver.waitUntil(async () => (await driver.$$(selector)).length > 0, { timeout });
     }
     const element = first ? await driver.$$(selector)[0] : await driver.$(selector);
-    await element.waitForDisplayed({ timeout: 15_000 });
+    await element.waitForDisplayed({ timeout });
     return element;
   }
   try {
@@ -64,8 +64,15 @@ test(`${platform}: home → game → stress events`, { timeout: 240_000 }, async
     const button = platform === 'android'
       ? await driver.$('~샘플 재생 완료') : completed;
     assert.equal(await button.isEnabled(), false, 'Replay must be disabled when complete');
+    if (process.env.UI_VERIFY_SEASON === '1') {
+      await driver.terminateApp(appId);
+      await driver.activateApp(appId);
+      await (await visible('2026 지난 경기 멘탈지수')).click();
+      await visible('조회된 종료 경기 729경기', false, 120_000);
+      await visible('지수 확인 가능 703 · 자료 확인 중 26 · 준비 전 0');
+    }
     await driver.saveScreenshot(path.join(artifacts, 'passed.png'));
-    await writeFile(path.join(artifacts, 'result.json'), JSON.stringify({ platform, udid, passed: true, scores }, null, 2));
+    await writeFile(path.join(artifacts, 'result.json'), JSON.stringify({ platform, udid, passed: true, scores, verifiedSeason: process.env.UI_VERIFY_SEASON === '1' }, null, 2));
   } catch (error) {
     await Promise.allSettled([
       driver.saveScreenshot(path.join(artifacts, 'failed.png')),

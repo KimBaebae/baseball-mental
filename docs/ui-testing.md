@@ -1,6 +1,6 @@
 # Appium UI 테스트
 
-Appium + WebdriverIO + TypeScript로 설치된 iOS·Android 앱을 조작한다. 테스트는 `tests/ui/smoke.test.ts`에서 공통으로 정의하고, 요소 선택과 기기 연결만 플랫폼별로 분기한다. 현재 대상은 샘플 경기 앱이며 실제 중계, 운영 서버, 원격 푸시를 검증하지 않는다.
+Appium + WebdriverIO + TypeScript로 설치된 iOS·Android 앱을 조작한다. 테스트는 `tests/ui/smoke.test.ts`에서 공통으로 정의하고, 요소 선택과 기기 연결만 플랫폼별로 분기한다. 기본 시나리오는 샘플 경기다. `UI_VERIFY_SEASON=1`을 지정하면 운영 API의 2026 시즌 경기·지수 준비 건수도 확인한다. 원격 푸시는 검증하지 않는다.
 
 ## 준비
 
@@ -33,6 +33,8 @@ xcrun simctl list devices booted
 adb devices
 UI_PLATFORM=ios UI_UDID=<SIMULATOR_UDID> npm run ui:test
 UI_PLATFORM=android UI_UDID=<EMULATOR_SERIAL> npm run ui:test
+UI_VERIFY_SEASON=1 UI_PLATFORM=ios UI_UDID=<SIMULATOR_UDID> npm run ui:test
+UI_VERIFY_SEASON=1 UI_PLATFORM=android UI_UDID=<EMULATOR_SERIAL> npm run ui:test
 npm run ui:typecheck
 ```
 
@@ -44,6 +46,7 @@ npm run ui:typecheck
 2. `LG vs 두산` 경기 상세와 초기 점수 30을 확인한다.
 3. 네 이벤트를 반영하며 점수가 `44 → 67 → 33 → 65`로 변하는지 확인한다.
 4. 완료 버튼이 비활성화되어 추가 재생을 막는지 확인한다.
+5. `UI_VERIFY_SEASON=1`이면 앱을 다시 열어 운영 서버의 2026 시즌 729경기·지수 준비 703건·자료 확인 중 26건을 확인한다.
 
 고정 좌표나 임의 sleep 없이 화면 요소가 나타날 때까지 기다린다. 문구 변경 시 선택자도 갱신해야 한다. 시나리오의 기대 점수는 앱 구현 함수를 호출해 계산하지 않는다.
 
