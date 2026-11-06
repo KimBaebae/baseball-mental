@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { Linking, Platform, ScrollView, Text } from 'react-native';
 import Constants from 'expo-constants';
 import { Button, Card, s } from '../ui';
-import { useTeamVisual } from '../team-visual';
+import { appearance as visual } from '../theme';
 
 export default function NotificationsScreen() {
-  const visual = useTeamVisual();
   const [status, setStatus] = useState('아직 검증하지 않았어요.');
   const [token, setToken] = useState('');
   const [busy, setBusy] = useState(false);

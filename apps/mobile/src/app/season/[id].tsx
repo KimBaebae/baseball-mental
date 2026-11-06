@@ -1,4 +1,5 @@
 import { LoadingSkeleton, SkeletonBlock } from '../../LoadingSkeleton';
+import { StadiumHero } from '../../StadiumHero';
 import { groupStressEvents, stressChange } from '../../domain/stress-timeline';
 import { useCallback, useMemo, useState } from 'react';
 import { SectionList, Text, View } from 'react-native';
@@ -7,7 +8,7 @@ import { createGamesApi } from '../../api/games';
 import { teamName, indexLabel, mentalReason, gameIdentity } from '../../domain/teams';
 import { useRemote } from '../../hooks/useRemote';
 import { Button, Card, colors, s } from '../../ui';
-import { useTeamVisual } from '../../team-visual';
+import { appearance as visual } from '../../theme';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL, fetch, 45_000);
 const outcomes: Record<string, string> = {
@@ -26,7 +27,6 @@ export default function SeasonGame() {
 }
 
 function Detail({ id, team }: { id: string; team: string }) {
-  const visual = useTeamVisual();
   const [attempt, setAttempt] = useState(0);
   const key = `${id}:${team}:${attempt}`;
   const load = useCallback((signal: AbortSignal) => api.mental(id, team, signal), [id, team]);
@@ -42,28 +42,24 @@ function Detail({ id, team }: { id: string; team: string }) {
   const sections = useMemo(() => groupStressEvents(data?.status === 'ready' ? data.events : []), [data]);
   const other = identity && (team === identity.away ? identity.home : team === identity.home ? identity.away : null);
   const ready = data?.status === 'ready';
-  return <SectionList stickySectionHeadersEnabled={false} style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={[s.content, { gap: 0 }]} sections={sections} keyExtractor={event => event.event_id} initialNumToRender={15}
+  return <SectionList stickySectionHeadersEnabled={false} style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={[s.content, { gap: 0, paddingTop: 0 }]} sections={sections} keyExtractor={event => event.event_id} initialNumToRender={15}
     ListHeaderComponent={<View style={{ gap: 18 }}>
-      <Text style={s.eyebrow}>{teamName(team)} 관점 · 지난 경기</Text>
-      <Text style={s.title}>그날의 스트레스</Text>
-      <View style={{ padding: 22, borderRadius: 24, backgroundColor: visual.surface, gap: 14 }}>
-        <Text style={[s.eyebrow, { color: visual.accent }]}>최종 스코어</Text>
+      <StadiumHero compact>
+        <Text style={s.eyebrow}>{identity?.date} · 최종 스코어</Text>
         {scoreboard.loading ? <View accessible accessibilityLabel="최종 점수 불러오는 중"><SkeletonBlock height={64} /></View> : scoreboard.data?.status === 'completed' && scoreboard.data.away_runs !== null && scoreboard.data.home_runs !== null ?
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <View style={{ flex: 1, alignItems: 'center', gap: 8 }}><Text style={s.heading}>{teamName(scoreboard.data.away_team_id)}</Text><Text style={{ fontFamily: 'BagelFatOne', fontSize: 48, color: colors.ink }}>{scoreboard.data.away_runs}</Text><Text style={s.body}>원정</Text></View>
-            <Text style={s.heading}>:</Text>
-            <View style={{ flex: 1, alignItems: 'center', gap: 8 }}><Text style={s.heading}>{teamName(scoreboard.data.home_team_id)}</Text><Text style={{ fontFamily: 'BagelFatOne', fontSize: 48, color: colors.ink }}>{scoreboard.data.home_runs}</Text><Text style={s.body}>홈</Text></View>
+          <View style={[s.row, { paddingVertical: 4 }]}>
+            <View style={{ flex: 1, alignItems: 'center', gap: 4 }}><Text style={s.heading}>{teamName(scoreboard.data.away_team_id)}</Text><Text style={s.body}>원정</Text></View>
+            <Text accessibilityLabel={`최종 점수 원정 ${scoreboard.data.away_runs} 대 홈 ${scoreboard.data.home_runs}`} style={[s.title, { fontSize: 44, flexShrink: 1 }]}>{scoreboard.data.away_runs} : {scoreboard.data.home_runs}</Text>
+            <View style={{ flex: 1, alignItems: 'center', gap: 4 }}><Text style={s.heading}>{teamName(scoreboard.data.home_team_id)}</Text><Text style={s.body}>홈</Text></View>
           </View> : <><Text style={s.body}>{scoreboard.error ?? '최종 점수를 아직 확인할 수 없어요.'}</Text><Button title="점수 다시 불러오기" onPress={() => setAttempt(value => value + 1)} /></>}
-      </View>
-      {identity ? <Text style={s.heading}>{identity.date} · {teamName(identity.away)} vs {teamName(identity.home)}</Text> : null}
-      <Text style={s.body}>경기 기록과 계산 모델로 만든 재미용 지수예요. 의학적 지표나 개인의 실제 감정·관람 기록이 아니에요.</Text>
-      {other && /^[A-Z]{2}$/.test(other) ? <Button title={`${teamName(other)} 관점으로 바꾸기`} onPress={() => router.replace({ pathname: '/season/[id]', params: { id, team: other } })} /> : null}
+      </StadiumHero>
       {loading ? <LoadingSkeleton label="스트레스 지수 불러오는 중" /> : error ? <Card>
         <Text accessibilityRole="alert" style={s.body}>{error}</Text><Button title="다시 시도" onPress={() => setAttempt(value => value + 1)} />
       </Card> : data ? <>
         {ready ? <Card>
-          <Text style={s.heading}>경기 종료 스트레스</Text>
-          <Text accessibilityLabel={`종료 스트레스 지수 ${data.score}점`} style={{ fontFamily: 'BagelFatOne', fontSize: 64, color: colors.ink }}>{data.score}<Text style={{ fontSize: 20 }}> / 100</Text></Text>
+          <Text style={s.heading}>{teamName(team)} 팬의 스트레스</Text>
+          <Text accessibilityLabel={`종료 스트레스 지수 ${data.score}점`} style={{ fontFamily: 'BagelFatOne', fontSize: 88, color: colors.ink }}>{data.score}<Text style={{ fontSize: 24, color: colors.muted }}> / 100</Text></Text>
+          <View accessibilityRole="progressbar" accessibilityLabel="경기 종료 스트레스" aria-valuemin={0} aria-valuemax={100} aria-valuenow={data.score ?? 0} style={{ height: 10, borderRadius: 999, backgroundColor: colors.line, overflow: 'hidden' }}><View style={{ height: '100%', width: `${data.score ?? 0}%`, borderRadius: 999, backgroundColor: colors.orange }} /></View>
           <Text style={s.body}>최고 지수 {data.peak_score}점 · 누적 변화 {data.raw_total !== null && data.raw_total > 0 ? '+' : ''}{data.raw_total}점</Text>
           <Text style={s.body}>스트레스가 쌓이면 +, 해소되면 −예요. 지수는 0~100 범위예요.</Text>
         </Card> : <Card>
@@ -74,7 +70,11 @@ function Detail({ id, team }: { id: string; team: string }) {
         {ready ? <Text style={s.heading}>경기 흐름</Text> : null}
       </> : null}
     </View>}
-    ListFooterComponent={!loading ? <View style={{ paddingTop: 24 }}><Button title="새로고침" onPress={() => setAttempt(value => value + 1)} /></View> : undefined}
+    ListFooterComponent={<View style={{ paddingTop: 24, gap: 18 }}>
+      {other && /^[A-Z]{2}$/.test(other) ? <Button title={`${teamName(other)} 관점으로 바꾸기`} onPress={() => router.replace({ pathname: '/season/[id]', params: { id, team: other } })} /> : null}
+      {!loading ? <Button title="새로고침" onPress={() => setAttempt(value => value + 1)} /> : null}
+      <Text style={s.body}>경기 기록과 계산 모델로 만든 재미용 지수예요. 의학적 지표나 개인의 실제 감정·관람 기록이 아니에요.</Text>
+    </View>}
     ListEmptyComponent={ready ? <Text style={s.body}>표시할 사건이 없어요.</Text> : undefined}
     renderSectionHeader={({ section }) => <View style={{ gap: 12, paddingTop: section.firstInningSection ? 24 : 16, paddingBottom: 12 }}>
       {section.firstInningSection ? <Text accessibilityRole="header" style={[s.title, { fontSize: 28 }]}>{section.inning}회</Text> : null}

@@ -4,12 +4,11 @@ import { router } from 'expo-router';
 import { ScrollView, Text } from 'react-native';
 import { teamName } from '../domain/teams';
 import { useTeamPreference } from '../team-preference';
-import { useTeamVisual } from '../team-visual';
+import { appearance as visual } from '../theme';
 import { Button, Card, s } from '../ui';
 
 export default function Settings() {
   const { teamId } = useTeamPreference();
-  const visual = useTeamVisual();
   return <ScrollView style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={s.content}>
     <Text style={[s.eyebrow, { color: visual.accent }]}>내 관전석</Text>
     <Text style={s.title}>설정</Text>

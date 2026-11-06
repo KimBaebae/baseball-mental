@@ -3,7 +3,7 @@ import { ActivityIndicator, ScrollView, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { createGamesApi, type GameSnapshot } from '../../api/games';
 import { Button, Card, s } from '../../ui';
-import { useTeamVisual } from '../../team-visual';
+import { appearance as visual } from '../../theme';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
 
@@ -13,7 +13,6 @@ export default function ServerGame() {
 }
 
 function Details({ id }: { id: string }) {
-  const visual = useTeamVisual();
   const [game, setGame] = useState<GameSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

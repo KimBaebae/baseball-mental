@@ -4,13 +4,12 @@ import { router } from 'expo-router';
 import { createGamesApi, type GameSnapshot } from '../../api/games';
 import { YearMonthPicker } from '../../YearMonthPicker';
 import { Button, Card, s } from '../../ui';
-import { useTeamVisual } from '../../team-visual';
+import { appearance as visual } from '../../theme';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
 const currentMonthInKorea = () => new Date(Date.now() + 9 * 60 * 60 * 1000).getUTCMonth() + 1;
 
 export default function Records() {
-  const visual = useTeamVisual();
   const [year, setYear] = useState(2026);
   const [month, setMonth] = useState(currentMonthInKorea);
   const [attempt, setAttempt] = useState(0);

@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 import { colors, s, textOn } from './ui';
-import { useTeamVisual } from './team-visual';
+import { appearance as visual } from './theme';
 
 export function YearMonthPicker({ year, month, onChange, allowAll = false, availableMonths = Array.from({ length: 9 }, (_, i) => i + 3) }: {
   year: number;
@@ -9,7 +9,6 @@ export function YearMonthPicker({ year, month, onChange, allowAll = false, avail
   allowAll?: boolean;
   availableMonths?: number[];
 }) {
-  const visual = useTeamVisual();
   const choice = (label: string, selected: boolean, onPress: () => void) => <Pressable
     key={label} accessibilityRole="button" accessibilityLabel={label}
     accessibilityState={{ selected }} onPress={onPress}

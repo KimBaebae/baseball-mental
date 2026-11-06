@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { colors } from '../ui';
 import { games } from '../domain/game';
 import { TeamPreferenceProvider, useTeamPreference } from '../team-preference';
-import { useTeamVisual } from '../team-visual';
+import { appearance as visual } from '../theme';
 import type { NotificationResponse } from 'expo-notifications';
 
 export default function Layout() {
@@ -16,7 +16,6 @@ export default function Layout() {
 function AppShell() {
   const [fontsLoaded, fontError] = useFonts({ BagelFatOne: require('../../assets/fonts/BagelFatOne-Regular.ttf') });
   const { teamId, status } = useTeamPreference();
-  const visual = useTeamVisual();
   useEffect(() => {
     if (Platform.OS === 'web') return;
     let cleanup: (() => void) | undefined;
@@ -38,7 +37,7 @@ function AppShell() {
     return () => { active = false; cleanup?.(); };
   }, []);
   if (!fontsLoaded && !fontError) return <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center' }}><StatusBar style="light" /><ActivityIndicator accessibilityLabel="화면 준비 중" color={colors.ink} /></View>;
-  return <><StatusBar style="light" /><Stack screenOptions={{ headerStyle: { backgroundColor: visual.soft }, headerTintColor: colors.ink, contentStyle: { backgroundColor: visual.soft } }}>
+  return <><StatusBar style="light" /><Stack screenOptions={{ headerStyle: { backgroundColor: visual.soft }, headerTintColor: colors.ink, headerShadowVisible: false, headerTitleStyle: { fontFamily: 'BagelFatOne', fontSize: 22 }, contentStyle: { backgroundColor: visual.soft } }}>
     <Stack.Screen name="index" options={{ title: '왜저럴까' }} />
     <Stack.Protected guard={status === 'ready' && !!teamId} redirectTo="/">
       <Stack.Screen name="team" options={{ headerShown: false, presentation: 'fullScreenModal' }} />

@@ -3,10 +3,9 @@ import { ScrollView, Text, View, Share } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { games, summarize } from '../../domain/game';
 import { Button, Card, colors, s } from '../../ui';
-import { useTeamVisual } from '../../team-visual';
+import { appearance as visual } from '../../theme';
 
 export default function Game() {
-  const visual = useTeamVisual();
   const { id } = useLocalSearchParams<{ id: string }>();
   const game = games.find(item => item.id === id);
   const [count, setCount] = useState(0);

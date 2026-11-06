@@ -2,10 +2,9 @@ import { router } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import { games } from '../domain/game';
 import { Button, Card, s } from '../ui';
-import { useTeamVisual } from '../team-visual';
+import { appearance as visual } from '../theme';
 
 export default function Demo() {
-  const visual = useTeamVisual();
   return <ScrollView style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={s.content}>
     <Text style={s.title}>가상 경기 체험</Text>
     <Text style={s.body}>아래는 실제 일정·선수 기록이 아닌 화면 체험용 경기예요.</Text>
