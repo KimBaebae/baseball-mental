@@ -13,7 +13,7 @@ export function YearMonthPicker({ year, month, onChange, allowAll = false, avail
   const choice = (label: string, selected: boolean, onPress: () => void) => <Pressable
     key={label} accessibilityRole="button" accessibilityLabel={label}
     accessibilityState={{ selected }} onPress={onPress}
-    style={{ minWidth: 68, minHeight: 48, paddingHorizontal: 16, paddingVertical: 13, borderRadius: 999, borderWidth: 1, borderColor: colors.line, backgroundColor: selected ? visual.accent : colors.bg, alignItems: 'center' }}>
+    style={{ minWidth: 68, minHeight: 48, paddingHorizontal: 16, paddingVertical: 13, borderRadius: 999, borderWidth: 1, borderColor: selected ? visual.secondary : visual.border, backgroundColor: selected ? visual.accent : visual.surface, alignItems: 'center' }}>
     <Text style={{ color: selected ? textOn(visual.accent) : colors.ink, fontWeight: '700' }}>{selected ? '✓ ' : ''}{label}</Text>
   </Pressable>;
   return <View style={{ gap: 12 }}>

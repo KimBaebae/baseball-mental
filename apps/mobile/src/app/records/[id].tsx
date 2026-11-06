@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { createGamesApi, type GameSnapshot } from '../../api/games';
-import { Button, Card, colors, s } from '../../ui';
+import { Button, Card, s } from '../../ui';
 import { useTeamVisual } from '../../team-visual';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
@@ -27,7 +27,7 @@ function Details({ id }: { id: string }) {
   }, [id, attempt]);
   const reload = () => { setLoading(true); setError(''); setGame(null); setAttempt(value => value + 1); };
   return <ScrollView style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={s.content}>
-    {loading ? <ActivityIndicator accessibilityLabel="경기 상세 불러오는 중" color={colors.green} /> : error ? <Card>
+    {loading ? <ActivityIndicator accessibilityLabel="경기 상세 불러오는 중" color={visual.accent} /> : error ? <Card>
       <Text accessibilityRole="alert" style={s.body}>{error}</Text>
       <Button title="다시 시도" onPress={reload} />
     </Card> : game ? <>

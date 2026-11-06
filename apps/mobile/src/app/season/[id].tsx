@@ -24,7 +24,7 @@ export default function SeasonGame() {
 }
 
 function Detail({ id, team }: { id: string; team: string }) {
-  const visual = useTeamVisual(team);
+  const visual = useTeamVisual();
   const [attempt, setAttempt] = useState(0);
   const key = `${id}:${team}:${attempt}`;
   const load = useCallback((signal: AbortSignal) => api.mental(id, team, signal), [id, team]);
@@ -39,7 +39,7 @@ function Detail({ id, team }: { id: string; team: string }) {
       {identity ? <Text style={s.heading}>{identity.date} · {teamName(identity.away)} vs {teamName(identity.home)}</Text> : null}
       <Text style={s.body}>경기 기록과 계산 모델로 만든 재미용 지수예요. 의학적 지표나 개인의 실제 감정·관람 기록이 아니에요.</Text>
       {other && /^[A-Z]{2}$/.test(other) ? <Button title={`${teamName(other)} 관점으로 바꾸기`} onPress={() => router.replace({ pathname: '/season/[id]', params: { id, team: other } })} /> : null}
-      {loading ? <><ActivityIndicator color={colors.green} accessibilityLabel="멘탈지수 불러오는 중" /><Text style={s.body}>경기 흐름을 불러오는 중이에요.</Text></> : error ? <Card>
+      {loading ? <><ActivityIndicator color={visual.accent} accessibilityLabel="멘탈지수 불러오는 중" /><Text style={s.body}>경기 흐름을 불러오는 중이에요.</Text></> : error ? <Card>
         <Text accessibilityRole="alert" style={s.body}>{error}</Text><Button title="다시 시도" onPress={() => setAttempt(value => value + 1)} />
       </Card> : data ? <>
         {ready ? <Card>

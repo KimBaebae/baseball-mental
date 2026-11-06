@@ -171,3 +171,21 @@ test('home defaults to the latest completed month and hides offseason months', (
   assert.deepEqual(seasonMonths(games), [3, 4, 5, 6, 7, 8, 9, 10]);
   assert.equal(latestCompletedMonth([october]), null);
 });
+
+import { teamPalettes } from '../src/domain/team-palettes.ts';
+import { teams } from '../src/domain/teams.ts';
+test('every team has a complete palette with legible accents on its surfaces', () => {
+  const luminance = (hex: string) => {
+    const rgb = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+    return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+  };
+  for (const { id } of teams) {
+    const palette = teamPalettes[id];
+    assert.ok(palette, id);
+    for (const color of Object.values(palette)) assert.match(color, /^#[0-9A-F]{6}$/);
+    for (const bg of [palette.soft, palette.surface]) {
+      const ratio = (luminance(palette.accent) + 0.05) / (luminance(bg) + 0.05);
+      assert.ok(ratio >= 4.5, `${id} accent contrast: ${ratio}`);
+    }
+  }
+});

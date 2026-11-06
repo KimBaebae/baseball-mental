@@ -1,3 +1,4 @@
+import { TeamCharacter } from '../../TeamCharacter';
 import { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { Stack, router } from 'expo-router';
@@ -44,17 +45,15 @@ function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
     <FlatList style={[s.page, { backgroundColor: visual.soft }]} contentContainerStyle={s.content} data={games} keyExtractor={game => game.game_id} initialNumToRender={12}
       ListHeaderComponent={<View style={{ gap: 17 }}>
         <View style={{ alignItems: 'center', paddingTop: 12, gap: 8 }}>
-          <View style={{ width: 116, height: 116, borderRadius: 34, alignItems: 'center', justifyContent: 'center', backgroundColor: visual.soft }}>
-            <Text accessibilityLabel={`${teamName(preferredTeam)} 상징 이모지`} style={{ fontSize: preferredTeam === 'LG' ? 40 : 65 }}>{visual.emoji}</Text>
-          </View>
+          <TeamCharacter teamId={preferredTeam} size={160} />
           <Text style={[s.eyebrow, { color: visual.accent }]}>{teamName(preferredTeam)} 팬의 관전석</Text>
           <Pressable accessibilityRole="button" accessibilityLabel="연도와 월 선택" onPress={() => setPicker('month')} style={{ minHeight: 52, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={s.title}>{season}년 {month}월 ⌄</Text>
           </Pressable>
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel={`${teamName(team)} 경기 필터`} onPress={() => setPicker('team')}
-          style={{ borderRadius: 20, backgroundColor: visual.soft, padding: 16, minHeight: 54 }}>
-          <Text style={[s.heading, { color: visual.accent, fontSize: 17 }]}>{teamVisuals[team]?.emoji ?? '⚾'}  {teamName(team)} 경기만 보기  ⌄</Text>
+          style={{ borderRadius: 20, backgroundColor: visual.surface, borderWidth: 1, borderColor: visual.border, padding: 16, minHeight: 54 }}>
+          <Text style={[s.heading, { color: visual.accent, fontSize: 17 }]}>{teamName(team)} 경기만 보기  ⌄</Text>
         </Pressable>
         <Text style={s.body}>정규시즌·포스트시즌 · 시범경기 제외</Text>
         {data ? <Card>
@@ -76,12 +75,13 @@ function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
       </Card>} />
     <Modal visible={picker !== null} transparent animationType="slide" onRequestClose={() => setPicker(null)}>
       <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#0009' }}>
-        <View style={{ backgroundColor: colors.surface, borderTopLeftRadius: 28, borderTopRightRadius: 28, maxHeight: '75%', padding: 24, gap: 16 }}>
+        <View style={{ backgroundColor: visual.surface, borderTopLeftRadius: 28, borderTopRightRadius: 28, maxHeight: '75%', padding: 24, gap: 16 }}>
           <View style={s.row}><Text style={s.heading}>{picker === 'team' ? '어느 팀 경기를 볼까요?' : '연도와 월 선택'}</Text><Pressable accessibilityRole="button" accessibilityLabel="선택 닫기" onPress={() => setPicker(null)}><Text style={s.body}>닫기 ✕</Text></Pressable></View>
           <ScrollView contentContainerStyle={{ gap: 10 }}>
             {picker === 'team' ? teams.map(item => <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`${item.name} 경기 필터`} accessibilityState={{ selected: team === item.id }}
-              onPress={() => { setTeam(item.id); setSelectedMonth(null); setPicker(null); }} style={{ minHeight: 54, borderRadius: 18, padding: 14, backgroundColor: team === item.id ? teamVisuals[item.id].soft : colors.bg }}>
-              <Text style={[s.heading, { fontSize: 17, color: team === item.id ? teamVisuals[item.id].accent : colors.ink }]}>{teamVisuals[item.id].emoji}  {item.name}{team === item.id ? '  ✓' : ''}</Text>
+              onPress={() => { setTeam(item.id); setSelectedMonth(null); setPicker(null); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 54, borderRadius: 18, padding: 14, backgroundColor: team === item.id ? teamVisuals[item.id].soft : colors.bg }}>
+              <TeamCharacter teamId={item.id} size={44} />
+              <Text style={[s.heading, { fontSize: 17, color: team === item.id ? teamVisuals[item.id].accent : colors.ink }]}>{item.name}{team === item.id ? '  ✓' : ''}</Text>
             </Pressable>) : <YearMonthPicker year={season} month={month} availableMonths={availableMonths} onChange={(_, value) => { setSelectedMonth(value); setPicker(null); }} />}
           </ScrollView>
         </View>

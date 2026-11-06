@@ -1,3 +1,4 @@
+import { TeamCharacter } from '../TeamCharacter';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { ScrollView, Text } from 'react-native';
@@ -14,7 +15,8 @@ export default function Settings() {
     <Text style={s.title}>설정</Text>
     <Card>
       <Text style={s.heading}>응원하는 팀</Text>
-      <Text style={s.body}>{visual.emoji}  {teamName(teamId ?? '')}</Text>
+      <TeamCharacter teamId={teamId ?? ''} size={88} />
+      <Text style={s.body}>{teamName(teamId ?? '')}</Text>
       <Button title="응원하는 팀 변경하기" onPress={() => router.push('/team')} />
     </Card>
     <Card>

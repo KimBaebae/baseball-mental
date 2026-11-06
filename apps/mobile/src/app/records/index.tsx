@@ -3,7 +3,7 @@ import { ActivityIndicator, ScrollView, Text } from 'react-native';
 import { router } from 'expo-router';
 import { createGamesApi, type GameSnapshot } from '../../api/games';
 import { YearMonthPicker } from '../../YearMonthPicker';
-import { Button, Card, colors, s } from '../../ui';
+import { Button, Card, s } from '../../ui';
 import { useTeamVisual } from '../../team-visual';
 
 const api = createGamesApi(process.env.EXPO_PUBLIC_API_URL);
@@ -30,7 +30,7 @@ export default function Records() {
     <Text style={s.body}>서버에 저장된 과거 경기 조회 결과예요. 실시간 중계·개인 멘탈 기록과는 별개이며, 아직 검증 중인 자료예요.</Text>
     <YearMonthPicker year={year} month={month} onChange={(value, selected) => { setYear(value); if (selected !== null) setMonth(selected); reload(); }} />
     <Text style={s.eyebrow}>조회 기준 · {year}년 {month}월</Text>
-    {loading ? <><ActivityIndicator accessibilityLabel="경기 기록 불러오는 중" color={colors.green} /><Text style={s.body}>기록을 불러오는 중이에요.</Text></> : error ? <Card>
+    {loading ? <><ActivityIndicator accessibilityLabel="경기 기록 불러오는 중" color={visual.accent} /><Text style={s.body}>기록을 불러오는 중이에요.</Text></> : error ? <Card>
       <Text accessibilityRole="alert" style={s.body}>{error}</Text>
       <Button title="다시 시도" onPress={reload} />
     </Card> : games.length === 0 ? <Text style={s.body}>이 달에 저장된 경기 기록이 없어요. 실제 경기 일정이 없다는 뜻은 아니에요.</Text> : games.map(game => <Card key={game.game_id}>
