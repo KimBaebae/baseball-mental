@@ -189,3 +189,16 @@ test('every team has a complete palette with legible accents on its surfaces', (
     }
   }
 });
+
+import { groupStressEvents, stressChange } from '../src/domain/stress-timeline.ts';
+test('timeline groups numeric innings and halves while preserving event order within each half', () => {
+  const event = (event_id: string, inning: number, half: 'top' | 'bottom') => ({ event_id, inning, half, outcome: 'out', delta: 6, score_after: 36, batter_name: null });
+  const sections = groupStressEvents([event('late', 10, 'top'), event('b', 2, 'bottom'), event('a', 2, 'top'), event('a2', 2, 'top')]);
+  assert.deepEqual(sections.map(s => s.key), ['2-top', '2-bottom', '10-top']);
+  assert.deepEqual(sections[0].data.map(e => e.event_id), ['a', 'a2']);
+  assert.deepEqual(sections.map(s => s.firstInningSection), [true, false, true]);
+  assert.deepEqual(groupStressEvents([]), []);
+  assert.equal(stressChange(8), '+8점');
+  assert.equal(stressChange(-10), '−10점');
+  assert.equal(stressChange(0), '0점');
+});

@@ -149,7 +149,7 @@ export function parseSeasonGames(value: unknown, season: number): SeasonGames {
 }
 
 export function parseMentalIndex(value: unknown, id: string, team: string): MentalIndex {
-  const invalid = () => new Error('멘탈지수 응답 형식이 올바르지 않아요.');
+  const invalid = () => new Error('스트레스 지수 응답 형식이 올바르지 않아요.');
   if (!object(value) || value.game_id !== id || value.team_id !== team || !indexStatus(value.status) ||
       !nullableText(value.reason) || typeof value.model_version !== 'string' || !Array.isArray(value.events) ||
       !(value.computed_at === null || (typeof value.computed_at === 'string' && Number.isFinite(Date.parse(value.computed_at)))) ||

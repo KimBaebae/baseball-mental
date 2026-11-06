@@ -1,6 +1,7 @@
+import { LoadingSkeleton, SkeletonBlock } from '../../LoadingSkeleton';
 import { TeamCharacter } from '../../TeamCharacter';
 import { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { FlatList, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { createGamesApi, type SeasonGame } from '../../api/games';
 import { YearMonthPicker } from '../../YearMonthPicker';
@@ -47,9 +48,9 @@ function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
         <View style={{ alignItems: 'center', paddingTop: 12, gap: 8 }}>
           <TeamCharacter teamId={preferredTeam} size={160} />
           <Text style={[s.eyebrow, { color: visual.accent }]}>{teamName(preferredTeam)} 팬의 관전석</Text>
-          <Pressable accessibilityRole="button" accessibilityLabel="연도와 월 선택" onPress={() => setPicker('month')} style={{ minHeight: 52, justifyContent: 'center', alignItems: 'center' }}>
+          {loading ? <View accessible accessibilityLabel="최근 경기 월 확인 중" style={{ paddingVertical: 12 }}><SkeletonBlock width={230} height={36} /></View> : <Pressable accessibilityRole="button" accessibilityLabel="연도와 월 선택" onPress={() => setPicker('month')} style={{ minHeight: 52, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={s.title}>{season}년 {month}월 ⌄</Text>
-          </Pressable>
+          </Pressable>}
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel={`${teamName(team)} 경기 필터`} onPress={() => setPicker('team')}
           style={{ borderRadius: 20, backgroundColor: visual.surface, borderWidth: 1, borderColor: visual.border, padding: 16, minHeight: 54 }}>
@@ -61,7 +62,7 @@ function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
           <Text style={s.body}>지수 확인 가능 {indexed} · 자료 확인 중 {incomplete} · 준비 전 {missing}</Text>
           <Text style={s.body}>경기 기록으로 계산한 재미용 지수예요. 직접 관람하지 않은 경기도 볼 수 있어요.</Text>
         </Card> : null}
-        {loading ? <><ActivityIndicator color={visual.accent} accessibilityLabel="시즌 경기 불러오는 중" /><Text style={s.body}>시즌 경기를 불러오는 중이에요.</Text></> : error ? <Card>
+        {loading ? <LoadingSkeleton label="시즌 경기 불러오는 중" /> : error ? <Card>
           <Text accessibilityRole="alert" style={s.body}>{error}</Text><Button title="다시 시도" onPress={() => setAttempt(value => value + 1)} />
         </Card> : null}
       </View>}
@@ -71,7 +72,7 @@ function SeasonContent({ preferredTeam }: { preferredTeam: string }) {
         <Text style={s.heading}>{teamName(item.away_team_id)} {item.away_runs ?? '—'} : {item.home_runs ?? '—'} {teamName(item.home_team_id)}</Text>
         {item.venue ? <Text style={s.body}>{item.venue}</Text> : null}
         <Text style={s.body}>{indexLabel[item.index_status]}</Text>
-        {item.status === 'completed' ? <Button title={`${teamName(team)} 관점 멘탈지수 보기`} onPress={() => openGame(item)} /> : <Text style={s.body}>경기가 끝나고 자료가 준비되면 지수를 볼 수 있어요.</Text>}
+        {item.status === 'completed' ? <Button title={`${teamName(team)} 관점 스트레스 지수 보기`} onPress={() => openGame(item)} /> : <Text style={s.body}>경기가 끝나고 자료가 준비되면 지수를 볼 수 있어요.</Text>}
       </Card>} />
     <Modal visible={picker !== null} transparent animationType="slide" onRequestClose={() => setPicker(null)}>
       <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#0009' }}>

@@ -44,9 +44,9 @@ function AppShell() {
       <Stack.Screen name="team" options={{ headerShown: false, presentation: 'fullScreenModal' }} />
       <Stack.Screen name="settings" options={{ title: '설정' }} />
       <Stack.Screen name="demo" options={{ title: '가상 경기 체험' }} />
-      <Stack.Screen name="game/[id]" options={{ title: '오늘의 멘탈' }} />
+      <Stack.Screen name="game/[id]" options={{ title: '오늘의 스트레스' }} />
       <Stack.Screen name="season/index" options={{ title: '2026 지난 경기' }} />
-      <Stack.Screen name="season/[id]" options={{ title: '경기 멘탈지수' }} />
+      <Stack.Screen name="season/[id]" options={{ title: '경기 스트레스 지수' }} />
       <Stack.Screen name="records/index" options={{ title: '서버 경기 기록' }} />
       <Stack.Screen name="records/[id]" options={{ title: '서버 경기 상세' }} />
       <Stack.Screen name="notifications" options={{ title: '알림 검증' }} />

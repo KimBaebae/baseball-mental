@@ -19,9 +19,9 @@ export default function Game() {
     <Text style={s.eyebrow}>가상 경기 · {game.home} 응원</Text>
     <Text style={s.title}>{game.away} vs {game.home}</Text>
     <Card>
-      <Text style={s.body}>내 멘탈 온도 · 의학적 지표가 아닌 재미용 점수</Text>
+      <Text style={s.body}>내 스트레스 지수 · 의학적 지표가 아닌 재미용 점수</Text>
       <Text style={{ fontSize: 68, fontFamily: 'BagelFatOne', color: result.level >= 70 ? colors.orange : colors.green }}>{result.level}<Text style={{ fontSize: 20 }}> / 100</Text></Text>
-      <View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: result.level }} accessibilityLabel="멘탈 온도" style={{ height: 16, backgroundColor: colors.line, borderRadius: 8, overflow: 'hidden' }}>
+      <View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: result.level }} accessibilityLabel="스트레스 지수" style={{ height: 16, backgroundColor: colors.line, borderRadius: 8, overflow: 'hidden' }}>
         <View style={{ height: 16, width: `${result.level}%`, backgroundColor: result.level >= 70 ? colors.orange : colors.green }} />
       </View>
       <Text style={s.heading}>{label}</Text>
@@ -34,7 +34,7 @@ export default function Game() {
       <Text style={s.heading}>{play.label}</Text>
       <Text style={{ color: result.deltas[index] > 0 ? colors.orange : colors.green, fontSize: 22, fontWeight: '800' }}>{result.deltas[index] > 0 ? '+' : ''}{result.deltas[index]}점</Text>
     </Card>)}
-    <Button title="샘플 결과 공유" onPress={() => { void Share.share({ message: `[가상 경기 체험] ${game.home} 응원 멘탈 온도 ${result.level}/100 · 왜저럴까` }).catch(() => setError('공유를 열지 못했어요. 다시 시도해주세요.')); }} />
+    <Button title="샘플 결과 공유" onPress={() => { void Share.share({ message: `[가상 경기 체험] ${game.home} 응원 스트레스 지수 ${result.level}/100 · 왜저럴까` }).catch(() => setError('공유를 열지 못했어요. 다시 시도해주세요.')); }} />
     {error ? <Text style={s.body}>{error}</Text> : null}
     <Button title="처음부터 다시 보기" onPress={() => { setCount(0); setError(''); }} />
   </ScrollView>;
