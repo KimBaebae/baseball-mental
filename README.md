@@ -185,3 +185,5 @@ CI/CD 설정 점검과 플랫폼별 배포 준비 작업은 [출시 작업 명�
 [출시 준비 실행 순서](docs/execution-order.md) · [배포 자동화](docs/release-automation.md) · [서버 배포 검사](docs/server-deployment.md) · [모바일 API 연결](docs/mobile-api.md)
 
 [AWS 비용 비교와 호스팅 선택](docs/aws-cost-comparison.md)
+
+내부 테스트 설치 링크와 자동 갱신 정책은 [내부 테스트 안내](docs/internal-testing.md)를 참고하세요.
