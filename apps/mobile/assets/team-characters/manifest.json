@@ -1,0 +1,72 @@
+[
+  {
+    "teamId": "SS",
+    "file": "ss-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: lion with a ragged blue mane and a silly blank stare.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "HT",
+    "file": "ht-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: tiger with three crooked forehead stripes and red scarf.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "LT",
+    "file": "lt-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: seagull with huge yellow beak, stick legs and navy baseball cap.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "HH",
+    "file": "hh-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: eagle with hooked orange beak and lopsided fierce eyebrows.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "NC",
+    "file": "nc-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: dinosaur with huge mouth, tiny arms, long tail and blue spots.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "SK",
+    "file": "sk-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: black Cane Corso dog with broad square muzzle and red collar.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "KT",
+    "file": "kt-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: wizard with crooked pointed black hat, red band and small magic wand.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "LG",
+    "file": "lg-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: two twin humanoid baseball robots together, matching pale faces, visible joint circles, burgundy baseball caps.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "OB",
+    "file": "ob-doodle-v1.png",
+    "prompt": "Create a single isolated team-signature character asset for a baseball app. Style reference is ONLY the clumsily mouse-drawn animal in the supplied Catch Mind screenshot: genuine amateur MS Paint mouse scribble, shaky uneven black strokes, badly closed contours, awkward asymmetric proportions, absurd simple eyes, funny deadpan expression, minimal details. NOT polished cute mascot art, NOT pixel art, NOT vector smooth curves, no shading, no glow, no texture, no gradients. Full body centered in square composition with 15% clear margin, bold enough to read small. Flat off-white body fill where needed and just 1-2 sparse team color accents; surrounding canvas genuinely transparent, no floor or scene. Do not reproduce the screenshot's UI. No text, lettering, logos or watermark. Subject: bear with round ears, broad paws and navy baseball cap.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  },
+  {
+    "teamId": "WO",
+    "file": "wo-doodle-v1.png",
+    "prompt": "Edit this character into a HUMAN baseball superhero with an absurdly massive protruding squared HUMAN CHIN below a tiny mouth. Exactly two arms and two legs, upright human body. Remove ALL animal traits: no horns, no animal muzzle, no nostrils on chin, no tail, no hooves, no four-legged body. Keep burgundy baseball helmet WITHOUT horns, burgundy small cape, baseball bat. Preserve the clumsy shaky mouse-drawn MS Paint black line style, uneven eyes, flat off-white fill, generous transparent margins. Fully transparent background, no text or logo. This is the Kiwoom Tukdori-inspired huge-chinned human hero, not a goat.\n\nFinal cleanup: Keep this exact human character and its clumsy black doodle lines, burgundy colors, huge HUMAN CHIN and upright two-legged pose. Remove the entire background AND every grey/red halo, shadow and glow around the silhouette. The entire space outside the character must be pure alpha transparency. Fit full character inside a SQUARE canvas with at least 12 percent transparent margin all four sides. No other changes, no cropped feet or bat.",
+    "method": "built-in image_gen",
+    "reference": "User-provided Catch Mind screenshot, drawing style only"
+  }
+]
